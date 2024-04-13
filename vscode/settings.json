@@ -1,0 +1,354 @@
+{
+    // Terminal stuff
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.scrollback": 10000,
+    "terminal.integrated.tabs.enabled": false,
+    "terminal.integrated.fontSize": 12,
+    // Git stuff
+    "git.autofetch": true,
+    "git.autoStash": true,
+    "git.mergeEditor": true,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.openRepositoryInParentFolders": "always",
+    // Zen mode stuff
+    "zenMode.hideStatusBar": false,
+    "zenMode.hideLineNumbers": false,
+    "zenMode.restore": true,
+    "zenMode.centerLayout": true,
+    // Workspace and color stuff
+    "window.commandCenter": false,
+    "workbench.layoutControl.enabled": false,
+    "workbench.editor.editorActionsLocation": "hidden",
+    // Editor stuff
+    "editor.formatOnPaste": true,
+    "editor.smoothScrolling": true,
+    "editor.renderLineHighlight": "none",
+    "editor.fontFamily": "jetbrains mono",
+    "editor.fontLigatures": true,
+    "editor.minimap.renderCharacters": false,
+    "editor.minimap.size": "fill",
+    "editor.formatOnType": false,
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.maxColumn": 100,
+    "editor.inlineSuggest.enabled": true,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120,
+    "editor.gotoLocation.multipleDefinitions": "goto",
+    "editor.gotoLocation.multipleImplementations": "goto",
+    "editor.hover.delay": 500,
+    "editor.semanticHighlighting.enabled": true,
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.insertSpaces": true,
+    "editor.renderWhitespace": "none",
+    "editor.renderControlCharacters": true,
+    "editor.formatOnSave": true,
+    "editor.quickSuggestions": {
+        "other": "off"
+    },
+    "editor.tabSize": 4,
+    "editor.rulers": [
+        120
+    ],
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc, .editorconfig, .prettier*, .gitignore, .eslintrc.json, jest.*.js, nx.json, tsconfig.*.json"
+    },
+    "explorer.openEditors.visible": 10,
+    "explorer.autoReveal": false,
+    "search.collapseResults": "alwaysExpand",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.autoGuessEncoding": true,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 100,
+    // Python stuff
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit",
+            "source.formatDocument": "explicit"
+        }
+    },
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.importFormat": "absolute",
+    "python.analysis.stubPath": "typings",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "error",
+        "reportMissingModuleSource": "error",
+        "reportMissingTypeStubs": "none",
+        "reportGeneralTypeIssues": "error",
+        "reportUnknownVariableType": "none", // Disables warnings for variables with partially unknown types
+        "reportUnknownMemberType": "none", // Disables warnings for members with partially unknown types
+        "reportUnknownArgumentType": "none",
+        "reportUnknownParameterType": "none",
+        "reportPartialTypeErrors": "none", // Specifically disables partial unknown type warnings
+        "reportUnknownLambdaType": "none"
+    },
+    "python.analysis.extraPaths": [
+        "~/pyrightconfig.json"
+    ],
+    "python.analysis.useLibraryCodeForTypes": true,
+    "python.analysis.autoSearchPaths": true,
+    // Workspace and color stuff
+    "workbench.tree.indent": 12,
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.colorTheme": "Dracula Pro",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.statusBar.visible": true,
+    "workbench.panel.defaultLocation": "bottom",
+    "workbench.panel.opensMaximized": "preserve",
+    "explorer.compactFolders": false,
+    "debug.toolBarLocation": "commandCenter",
+    "security.workspace.trust.untrustedFiles": "open",
+    "security.workspace.trust.enabled": true,
+    "security.workspace.trust.startupPrompt": "never",
+    "window.restoreFullscreen": true,
+    "window.newWindowDimensions": "maximized",
+    // Vim stuff
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.leader": "<space>",
+    "vim.highlightedyank.enable": true,
+    "vim.statusBarColorControl": true,
+    "vim.statusBarColors.normal": [
+        "#8FBCBB",
+        "#434C5E"
+    ],
+    "vim.statusBarColors.insert": [
+        "#f08080",
+        "#ffffff"
+    ],
+    "vim.highlightedyank.color": "#C34043",
+    "vim.handleKeys": {
+        "<C-o>": false,
+        "<C-f>": false,
+        "<C-b>": false,
+        "<C-w>": false,
+        "<C-a>": false,
+        "<C-[>": false,
+        "<C-]>": false,
+        "<C-y>": false,
+        "<C-v>": false,
+        "<C-c>": false,
+        "<C-x>": false,
+        "<C-n>": false
+    },
+    "editor.cursorSurroundingLines": 8,
+    "vim.insertModeKeyBindings": [
+        {
+            // Pressing j twice ("before": ["j", "j"]) simulates the Esc key ("after": ["<Esc>"]).
+            "before": [
+                "j",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ]
+        }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "<Leader>",
+                "l"
+            ],
+            "after": [
+                "$"
+            ]
+        },
+        {
+            "before": [
+                "<Leader>",
+                "h"
+            ],
+            "after": [
+                "^"
+            ]
+        },
+        {
+            "before": [
+                "J"
+            ],
+            "after": [
+                "5",
+                "j"
+            ]
+        },
+        {
+            "before": [
+                "K"
+            ],
+            "after": [
+                "5",
+                "k"
+            ]
+        },
+        {
+            // Pressing the leader key (Spacebar) followed by d deletes the current line.
+            "before": [
+                "<leader>",
+                "d"
+            ],
+            "after": [
+                "d",
+                "d"
+            ]
+        },
+        {
+            // Pressing ctrl+n clears search highlighting
+            "before": [
+                "<C-n>"
+            ],
+            "commands": [
+                ":nohl"
+            ]
+        },
+        {
+            "before": [
+                "t",
+                "l"
+            ],
+            "commands": [
+                "workbench.action.nextEditor"
+            ],
+            "silent": true
+        },
+        {
+            "before": [
+                "t",
+                "h"
+            ],
+            "commands": [
+                "workbench.action.previousEditor"
+            ],
+            "silent": true
+        },
+        {
+            // Pressing K inserts a line break above the cursor.
+            "before": [
+                "K"
+            ],
+            "commands": [
+                "lineBreakInsert"
+            ],
+            "silent": true
+        },
+        {
+            // Pressing the leader key (Spacebar) followed by w splits the editor.
+            "before": [
+                "<leader>",
+                "w"
+            ],
+            "commands": [
+                "workbench.action.splitEditor"
+            ]
+        },
+        {
+            // Pressing the leader key (Spacebar) followed by e toggles the sidebar visibility.
+            "before": [
+                "<leader>",
+                "e"
+            ],
+            "commands": [
+                "workbench.view.explorer"
+            ]
+        },
+        //  "ctrl+h": Focuses on the left editor group when the text editor is focused, Vim extension is active, and Vim is not in Insert mode.
+        {
+            "before": [
+                "<c-k>"
+            ],
+            "commands": [
+                "cursorPageUp"
+            ]
+        },
+        {
+            "before": [
+                "<c-j>"
+            ],
+            "commands": [
+                "cursorPageDown"
+            ]
+        },
+        {
+            // Pressing the leader key (Spacebar) followed by c comments the current line.
+            "before": [
+                "<leader>",
+                "c"
+            ],
+            "commands": [
+                "editor.action.commentLine"
+            ]
+        },
+        {
+            // Pressing the leader key (Spacebar) followed by o, g shows all symbols in the workspace.
+            "before": [
+                "<leader>",
+                "o",
+                "g"
+            ],
+            "commands": [
+                "workbench.action.showAllSymbols"
+            ]
+        },
+        {
+            // Pressing the leader key (Spacebar) followed by o, o shows all open editors in the active group.
+            "before": [
+                "<leader>",
+                "o",
+                "o"
+            ],
+            "commands": [
+                "workbench.action.showEditorsInActiveGroup"
+            ]
+        },
+        {
+            // Pressing the leader key (Spacebar) followed by o, p opens the quick open panel.
+            "before": [
+                "leader",
+                "o",
+                "p"
+            ],
+            "commands": [
+                "workbench.action.quickOpen"
+            ]
+        }
+    ],
+    //
+    // Custom keybindings for visual
+    //
+    "vim.visualModeKeyBindings": [
+        {
+            "before": [
+                "leader",
+                "c"
+            ],
+            "commands": [
+                "editor.action.commentLine",
+                "extension.vim_escape"
+            ]
+        }
+    ],
+    "vim.vimrc.enable": true,
+    "vim.vimrc.path": "~//_vimrc",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#8FBCBB",
+        "statusBar.noFolderBackground": "#8FBCBB",
+        "statusBar.debuggingBackground": "#8FBCBB",
+        "statusBar.foreground": "#434C5E",
+        "statusBar.debuggingForeground": "#434C5E"
+    }
+}
