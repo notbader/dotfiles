@@ -1,5 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC1091
+# Set SSH directory
+
+export SSH_HOME="$HOME/Desktop/stuff/dot_files"
 
 # Set default directory
 if [ -z "$PWD" ] || [ "$PWD" == "/" ]; then
