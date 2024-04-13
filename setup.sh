@@ -209,13 +209,6 @@ for file in "$DOTFILES_DIR/shell/"*; do
     fi
 done
 
-# Add sourcing for .inputrc in .bashrc
-INPUTRC_SOURCE_CMD="if [ -f \"$SHELL_DIR/.inputrc\" ]; then source \"$SHELL_DIR/.inputrc\"; fi"
-if ! grep -qxF "$INPUTRC_SOURCE_CMD" "$RC_FOR_SOURCE"; then
-    echo "$INPUTRC_SOURCE_CMD" >>"$RC_FOR_SOURCE"
-    echo "Added sourcing for .inputrc in .bashrc."
-fi
-
 # Set GitBash theme to Dracula
 if ask "Do you want to set the Dracula theme for Git Bash?"; then
     echo "ThemeFile=dracula" >"$MINTTY_CONFIG"

@@ -57,5 +57,4 @@ HISTTIMEFORMAT="%d/%m/%y %T "
 source "$HOME/Desktop/stuff/dot_files/shell/case_insensitive_completion.sh"
 source "$HOME/Desktop/stuff/dot_files/shell/git_aliases.sh"
 source "$HOME/Desktop/stuff/dot_files/shell/ssh_agent_auto_start.sh"
-if [ -f "$HOME/Desktop/stuff/dot_files/shell/.inputrc" ]; then source "$HOME/Desktop/stuff/dot_files/shell/.inputrc"; fi
 # -------------- End of Dotfiles install ---------------
