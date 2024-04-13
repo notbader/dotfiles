@@ -1,48 +1,36 @@
-[user]
-	name =
-	email =
-
-[core]
-	editor = vim
-
 [color]
-    ui = true
+ui = true
 
 [color "status"]
-    changed = cyan bold
-    untracked = yellow bold
-    added = green bold
-    branch = cyan bold
-    unmerged = red bold
+changed = cyan bold
+untracked = yellow bold
+added = green bold
+branch = cyan bold
+unmerged = red bold
 
 [color "diff"]
-    frag = cyan
-    new = green bold
-    commit = yellow
-    old = red white
+frag = cyan
+new = green bold
+commit = yellow
+old = red white
 
 [color "branch"]
-    current = yellow reverse
-    local = yellow
-    remote = green bold
+current = yellow reverse
+local = yellow
+remote = green bold
 remote = red bold
 
-[credential ""]
-	GitLabDevClientId =
-	GitLabDevClientSecret =
-	gitLabAuthModes = browser
-	provider = gitlab
-
 [mergetool]
-	keepBackup = false
+keepBackup = false
 
 [diff]
-	tool = vscode
+tool = vscode
 
 [difftool "vscode"]
-	cmd = code --wait --diff $LOCAL $REMOTE
+cmd = code --wait --diff $LOCAL $REMOTE
+
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+clean = git-lfs clean -- %f
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+required = true

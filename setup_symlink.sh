@@ -8,12 +8,14 @@ echo "========================================"
 # Get the absolute path to the directory containing this script
 DOTFILES_DIR=$(pwd)
 SHELL_DIR="$DOTFILES_DIR/shell"
+SSH_DIR="$DOTFILES_DIR/ssh"
 VSCODE_DIR="$DOTFILES_DIR/vscode"
-BASH_PROFILE="$HOME/.bash_profile"
-VIMRC_FILE="$SHELL_DIR/_vimrc"
+PYTHON_DIR="$DOTFILES_DIR/python"
+
+HOME_DEST="$HOME"
 CODE_USER_DIR="$HOME/AppData/Roaming/Code/User"
-MINTTY_CONFIG="$HOME/.minttyrc"
-RC_FOR_SOURCE="$SHELL_DIR/.bashrc"
+
+RC_FOR_SOURCE="$HOME/.bashrc"
 
 # Function to install Visual Studio Code and extensions
 function install_vscode() {
@@ -66,6 +68,33 @@ function ask() {
         response_lc=$(echo "$resp" | tr '[:upper:]' '[:lower:]') # case insensitive
     fi
     [ "$response_lc" = "y" ]
+}
+
+# Function to handle the creation of symlinks
+function create_symlink() {
+    local src="$1"
+    local dest="$2"
+    local hide
+    hide="${3:-true}"
+    if [ -f "$dest" ] || [ -L "$dest" ]; then
+        printf "\nA symlink or file already exists at %s", "$dest"
+        if ask "Do you want to overwrite the existing symlink or file?"; then
+            ln -sf "$src" "$dest"
+            echo "Symlink for $(basename "$src") has been updated to point to $dest."
+            if [ "$hide" = true ]; then
+                attrib +h "$dest"
+                echo "Hidden attribute set for $dest."
+            fi
+        else
+            echo "No changes made to existing symlink or file at $dest."
+        fi
+    elif ask "Do you want to create a symlink for $(basename "$src") in $dest?"; then
+        ln -sf "$src" "$dest"
+        echo "Symlink created for $(basename "$src") to $dest."
+        if [ "$hide" = true ]; then
+            attrib +h "$dest"
+        fi
+    fi
 }
 
 # Update environment variables
@@ -125,37 +154,55 @@ else
     install_vscode
 fi
 
-# Create .bash_profile in $HOME that sources .bashrc in $SHELL_DIR
-printf "\nCreating .bash_profile in %s...\n" "$HOME"
-if [ -f "$BASH_PROFILE" ]; then
-    printf "\nbash_profile already exists.\n"
-else
-    {
-        echo "#!/bin/bash"
-        echo "# shellcheck disable=SC1091"
-        echo "if [ -f \"$SHELL_DIR/.bashrc\" ]; then"
-        echo "    source \"$SHELL_DIR/.bashrc\""
-        echo "fi"
-    } >"$BASH_PROFILE"
-    attrib +h "$BASH_PROFILE"
-    printf "\nbash_profile created and configured\n"
+# Handle shell configuration files
+printf "\nProcessing dot configuration files...\n"
+for file in .bashrc .bash_profile .inputrc .gitconfig; do
+    if [ -f "$DOTFILES_DIR/shell/$file" ]; then
+        create_symlink "$DOTFILES_DIR/shell/$file" "$HOME_DEST/$file"
+    fi
+done
+
+# Handle shell scripts
+printf "\nProcessing shell scripts...\n"
+for file in "$SHELL_DIR"/*; do
+    if [ -f "$file" ]; then
+        filename=$(basename "$file")
+        create_symlink "$file" "$HOME_DEST/$filename"
+    fi
+done
+
+# Handle SSH configuration files
+printf "\nProcessing SSH configuration files...\n"
+
+if [ -d "$SSH_DIR" ]; then
+    mkdir -p "$HOME_DEST/.ssh"
+    attrib +h "$HOME_DEST/.ssh"
+    for file in "$SSH_DIR"/*; do
+        if [ -f "$file" ]; then
+            filename=$(basename "$file")
+            create_symlink "$file" "$HOME_DEST/.ssh/$filename" false
+        fi
+    done
 fi
 
-# Copy vimrc
-printf "\nCopying _vimrc to %s...\n" "$HOME"
-
-if [ -f "$HOME" ]; then
-    echo "_vimrc already exists in $HOME."
-    if ask "Do you want to overwrite the existing _vimrc?"; then
-        cp "$VIMRC_FILE" "$HOME"
-        printf "\n%s has been updated in %s.\n" "_vimrc" "$HOME"
-    else
-        printf "\nNo changes made to the existing _vimrc.\n"
-    fi
-else
-    cp "$VIMRC_FILE" "$HOME"
-    attrib +h "$HOME/_vimrc"
-    printf "\n%s has been copied to %s.\n" "_vimrc" "$HOME"
+# Python configuration files
+printf "\nProcessing Python configuration files...\n"
+if [ -d "$PYTHON_DIR" ]; then
+    for file in "$PYTHON_DIR"/*; do
+        if [ -f "$file" ]; then
+            filename=$(basename "$file")
+            # Check if the file is pyproject.toml and handle it specially
+            if [ "$filename" = "pyproject.toml" ]; then
+                # Define the special directory for pyproject.toml
+                special_dir="$HOME/AppData/Roaming/Ruff"
+                mkdir -p "$special_dir" # Ensure the directory exists
+                create_symlink "$file" "$special_dir/$filename"
+            else
+                # Handle all other Python configuration files normally
+                create_symlink "$file" "$HOME_DEST/$filename"
+            fi
+        fi
+    done
 fi
 
 # Handle vscode files
@@ -164,21 +211,7 @@ printf "\nProcessing VS Code configuration files...\n"
 for file in "$VSCODE_DIR"/*; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
-        # Copy the file instead of creating a symlink
-        if [ -f "$CODE_USER_DIR/$filename" ]; then
-            printf "\nA file named %s already exists in the destination.\n" "$filename"
-            if ask "Do you want to overwrite the existing file?"; then
-                cp "$file" "$CODE_USER_DIR/$filename"
-                echo "File $filename has been updated in the destination."
-            else
-                echo "No changes made to the existing file at the destination."
-            fi
-        else
-            if ask "Do you want to copy $filename to the destination?"; then
-                cp "$file" "$CODE_USER_DIR/$filename"
-                echo "File $filename has been copied to the destination."
-            fi
-        fi
+        create_symlink "$file" "$CODE_USER_DIR/$filename" false
     fi
 done
 
@@ -200,6 +233,8 @@ for file in "$DOTFILES_DIR/shell/"*; do
         filename=$(basename "$file")
         if [[ "$filename" != ".vimrc" && "$filename" != "_vimrc" ]]; then
             if ask "Do you want to source ${filename} in .bashrc?"; then
+                # ShellCheck disable directive added for each source command
+                echo "# shellcheck disable=SC1091" >>"$RC_FOR_SOURCE"
                 SOURCE_CMD="source \"$file\""
                 if ! grep -qxF "$SOURCE_CMD" "$RC_FOR_SOURCE"; then
                     echo "$SOURCE_CMD" >>"$RC_FOR_SOURCE"
@@ -208,19 +243,6 @@ for file in "$DOTFILES_DIR/shell/"*; do
         fi
     fi
 done
-
-# Add sourcing for .inputrc in .bashrc
-INPUTRC_SOURCE_CMD="if [ -f \"$SHELL_DIR/.inputrc\" ]; then source \"$SHELL_DIR/.inputrc\"; fi"
-if ! grep -qxF "$INPUTRC_SOURCE_CMD" "$RC_FOR_SOURCE"; then
-    echo "$INPUTRC_SOURCE_CMD" >>"$RC_FOR_SOURCE"
-    echo "Added sourcing for .inputrc in .bashrc."
-fi
-
-# Set GitBash theme to Dracula
-if ask "Do you want to set the Dracula theme for Git Bash?"; then
-    echo "ThemeFile=dracula" >"$MINTTY_CONFIG"
-    echo "Dracula theme set for Git Bash."
-fi
 
 echo '# -------------- End of Dotfiles install ---------------' >>"$RC_FOR_SOURCE"
 echo

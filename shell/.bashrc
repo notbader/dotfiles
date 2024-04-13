@@ -1,30 +1,10 @@
 #!/bin/bash
+# shellcheck disable=SC1091
 
 # Set default directory
 if [ -z "$PWD" ] || [ "$PWD" == "/" ]; then
     cd "$HOME/Desktop/stuff" || exit
 fi
-#ldkn;lsakjndfsldkjfnlskdjnflkjnfskdjnfksdjnfksdjnfksdjnfksdjfnksdjfnksdjfnksdjfnksdjfnksdjfnksdjfnkj
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-        color_prompt=yes
-    else
-        color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\e[34m\]λ\[\e[33m\]\$(parse_git_branch)\[\033[00m\]'
-else
-    PS1='${debian_chroot:+($debian_chroot)}\[\e[33m\]λ\[\e[34m\]\$(parse_git_branch)\[\033[00m\] '
-fi
-unset color_prompt force_color_prompt
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -34,8 +14,8 @@ if [ -x /usr/bin/dircolors ]; then
         eval "$(dircolors -b)"
     fi
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -69,3 +49,10 @@ mcd() {
     cd "$1" || exit
 }
 HISTTIMEFORMAT="%d/%m/%y %T "
+
+# -------------- Dotfiles install ---------------
+source "$HOME/Desktop/stuff/dot_files/shell/case_insensitive_completion.sh"
+source "$HOME/Desktop/stuff/dot_files/shell/git_aliases.sh"
+source "$HOME/Desktop/stuff/dot_files/shell/ssh_agent_auto_start.sh"
+if [ -f "$HOME/Desktop/stuff/dot_files/shell/.inputrc" ]; then source "$HOME/Desktop/stuff/dot_files/shell/.inputrc"; fi
+# -------------- End of Dotfiles install ---------------
