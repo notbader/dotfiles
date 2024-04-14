@@ -97,10 +97,10 @@
         "reportUnknownLambdaType": "none"
     },
     "python.analysis.extraPaths": [
-        "${home}/Desktop/stuff/000_dotfiles/python/pyrightconfig.json"
+        "C:/Users/balma/Desktop/stuff/000_dotfiles/python/pyrightconfig.json"
     ],
     "ruff.lint.args": [
-        "--config=${home}/Desktop/stuff/000_dotfiles/python/pyproject.toml"
+        "--config=C:/Users/balma/Desktop/stuff/000_dotfiles/python/pyproject.toml"
     ],
     "python.analysis.useLibraryCodeForTypes": true,
     "python.analysis.autoSearchPaths": true,
@@ -378,10 +378,10 @@
     "vim.vimrc.enable": true,
     "vim.vimrc.path": "~//_vimrc",
     "workbench.colorCustomizations": {
-        "statusBar.background": "#8FBCBB",
-        "statusBar.noFolderBackground": "#8FBCBB",
-        "statusBar.debuggingBackground": "#8FBCBB",
-        "statusBar.foreground": "#434C5E",
-        "statusBar.debuggingForeground": "#434C5E"
+        "statusBar.background": "#f08080",
+        "statusBar.noFolderBackground": "#f08080",
+        "statusBar.debuggingBackground": "#f08080",
+        "statusBar.foreground": "#ffffff",
+        "statusBar.debuggingForeground": "#ffffff"
     }
 }
