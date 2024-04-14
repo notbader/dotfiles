@@ -2,8 +2,6 @@
 # shellcheck disable=SC1091
 # Set SSH directory
 
-export SSH_HOME="$HOME/Desktop/stuff/dot_files"
-
 # Set default directory
 if [ -z "$PWD" ] || [ "$PWD" == "/" ]; then
     cd "$HOME/Desktop/stuff" || exit
@@ -17,8 +15,6 @@ if [ -x /usr/bin/dircolors ]; then
         eval "$(dircolors -b)"
     fi
     alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
@@ -29,12 +25,17 @@ fi
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Change Prompt
-parse_git_branch() {
-    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+new_line() {
+    printf "\n$ "
 }
-export PS1=" \[\e[34m\]λ \[\033[33m\]~ \[\033[33m\]\W\[\033[31m\]\$(parse_git_branch)\[\033[00m\] "
-
-echo -n -e "\033]0;Bash\007"
+function parse_git_dirty {
+    [[ $(git status --porcelain 2>/dev/null) ]] && echo "*"
+}
+function parse_git_branch {
+    git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/ (\1$(parse_git_dirty))/"
+}
+PS1="\[\e[97m\]\t \[\033[33m\]\w\[\e[97m\] ~\[\033[31m\]\$(parse_git_branch)\[\033[00m\]$(new_line)"
+export PS1
 
 # Aliases
 alias ..="cd .."
@@ -52,9 +53,3 @@ mcd() {
     cd "$1" || exit
 }
 HISTTIMEFORMAT="%d/%m/%y %T "
-
-# -------------- Dotfiles install ---------------
-source "$HOME/Desktop/stuff/dot_files/shell/case_insensitive_completion.sh"
-source "$HOME/Desktop/stuff/dot_files/shell/git_aliases.sh"
-source "$HOME/Desktop/stuff/dot_files/shell/ssh_agent_auto_start.sh"
-# -------------- End of Dotfiles install ---------------
