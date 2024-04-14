@@ -1,7 +1,7 @@
 #!/bin/bash
 # shellcheck disable=SC1090
 
-SSH_ENV="$HOME/Desktop/stuff/dot_files/.ssh/agent-environment"
+SSH_ENV="$HOME/Desktop/stuff/000_dotfiles/.ssh/agent-environment"
 
 function start_agent {
     echo "Initialising new SSH agent..."
