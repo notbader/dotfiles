@@ -56,4 +56,4 @@ mcd() {
 }
 
 # For some reason my 'i' key bugs sometimes, so I have to rebind it
-bind "i:self-insert"
+bind "i:self-insert" &>/dev/null

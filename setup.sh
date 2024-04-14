@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090
 
 echo
 echo "========================================"
@@ -16,10 +17,12 @@ CODE_USER_DIR="$HOME/AppData/Roaming/Code/User"
 MINTTY_CONFIG="$HOME/.minttyrc"
 GIT_CONFIG="$HOME/.gitconfig"
 INCLUDE_PATH="$SHELL_DIR/gitconfig"
+PYTHON_DIR="$DOTFILES_DIR/python"
+PYTHON_INSTALL_PATH="$HOME/AppData/Local/Programs/Python/"
 
 # Function to install Visual Studio Code and extensions
 function install_vscode() {
-    printf "\nChecking for Visual Studio Code installation..."
+    printf "\nChecking for Visual Studio Code installation...\n"
 
     # Check if VS Code is installed
     if winget list --id Microsoft.VisualStudioCode | grep -q "Microsoft.VisualStudioCode"; then
@@ -30,7 +33,7 @@ function install_vscode() {
             echo "Installing Visual Studio Code..."
             winget install -e --id Microsoft.VisualStudioCode --silent \
                 --override "addcontextmenufiles=1 addcontextmenufolders=1 associatewithfiles=1 addtopath=1"
-            echo "Visual Studio Code installed."
+            printf "\nVisual Studio Code installed.\n"
         fi
     fi
 
@@ -70,58 +73,110 @@ function ask() {
     [ "$response_lc" = "y" ]
 }
 
-# Update environment variables
-function update_environment_variables() {
-    echo "Updating environment variables based on Python installation paths..."
+# Function to check if Python executable exists in the known install path
+function check_python_installation() {
+    local python_installed=false
+    local python_path=""
 
-    # Use PowerShell to handle the path extraction and environment variable update
+    # Check if any version of Python is installed in the known directory
+    for dir in "$PYTHON_INSTALL_PATH"/*/; do
+        if [[ -f "${dir}python.exe" ]]; then
+            python_installed=true
+            python_path="${dir}python.exe"
+            break
+        fi
+    done
+
+    if $python_installed; then
+        printf "\nPython is installed at %s\n" "$python_path"
+        # Check if Python is in PATH
+        if ! python --version &>/dev/null; then
+            printf "\nPython is not in PATH. Adding to PATH...\n"
+            add_python_to_path "$python_path"
+        else
+            printf "\nPython is already in PATH.\n"
+        fi
+    else
+        printf "\nPython is not installed in the expected directory.\n"
+        install_python
+    fi
+}
+
+# Function to check and update Python path
+function add_python_to_path() {
+    local python_exe_path=$1
+    local python_dir
+    python_dir=$(dirname "$python_exe_path")
+    local scripts_dir="$python_dir/Scripts"
+
+    # Use PowerShell to add the Python directory and Scripts directory to PATH and PYTHONPATH
     powershell.exe -Command "
-    # Get Python paths from where command
-    \$pythonPaths = (Get-Command python).Source | Select-Object -Unique
+    \$python_dir = '${python_dir}'
+    \$scripts_dir = '${scripts_dir}'
 
-    # Prepare the paths to add to PATH and PYTHONPATH
-    \$pathsToAdd = @()
-    foreach (\$path in \$pythonPaths) {
-        if (\$path -notlike '*WindowsApps*') {  # Exclude paths that are typically not real Python installations like WindowsApps
-            \$dir = Split-Path -Parent \$path
-            \$pathsToAdd += \$dir  # Add the base directory
-            \$scriptsPath = Join-Path -Path \$dir -ChildPath 'Scripts'
-            \$pathsToAdd += \$scriptsPath  # Add the Scripts directory
-        }
+    # Add to PATH if not already present
+    \$path = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
+    if (-not \$path.Contains(\$python_dir)) {
+        \$path = \$path + ';' + \$python_dir
     }
+    if (-not \$path.Contains(\$scripts_dir)) {
+        \$path = \$path + ';' + \$scripts_dir
+    }
+    [System.Environment]::SetEnvironmentVariable('PATH', \$path, [System.EnvironmentVariableTarget]::User)
 
-    # Update PATH
-    \$currentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
-    foreach (\$path in \$pathsToAdd) {
-        if (-not \$currentPath.Contains(\$path)) {
-            \$currentPath += ';'+\$path
-        }
+    # Add to PYTHONPATH if not already present
+    \$pythonpath = [System.Environment]::GetEnvironmentVariable('PYTHONPATH', [System.EnvironmentVariableTarget]::User)
+    if (\$null -eq \$pythonpath) {
+        \$pythonpath = ''
     }
-    [System.Environment]::SetEnvironmentVariable('PATH', \$currentPath, [System.EnvironmentVariableTarget]::User)
-
-    # Update PYTHONPATH to include the same paths (if needed)
-    \$currentPythonPath = [System.Environment]::GetEnvironmentVariable('PYTHONPATH', [System.EnvironmentVariableTarget]::User)
-    if (\$currentPythonPath -ne \$null) {
-        foreach (\$path in \$pathsToAdd) {
-            if (-not \$currentPythonPath.Contains(\$path)) {
-                \$currentPythonPath += ';'+\$path
-            }
-        }
-    } else {
-        \$currentPythonPath = [String]::Join(';', \$pathsToAdd)
+    if (-not \$pythonpath.Contains(\$python_dir)) {
+        \$pythonpath = \$pythonpath + ';' + \$python_dir
     }
-    [System.Environment]::SetEnvironmentVariable('PYTHONPATH', \$currentPythonPath, [System.EnvironmentVariableTarget]::User)
+    if (-not \$pythonpath.Contains(\$scripts_dir)) {
+        \$pythonpath = \$pythonpath + ';' + \$scripts_dir
+    }
+    [System.Environment]::SetEnvironmentVariable('PYTHONPATH', \$pythonpath, [System.EnvironmentVariableTarget]::User)
     "
+    printf "\nPython directory and Scripts have been added to PATH and PYTHONPATH.\n"
+}
 
-    echo "Environment variables PATH and PYTHONPATH have been updated."
+# Function to prompt user to install Python
+function install_python() {
+    echo "Please download and install Python from the official website or the software center."
+}
+
+append_path_to_bash_profile() {
+    python_paths=()
+
+    # Find all directories within the Python installation path
+    for directory in "$PYTHON_INSTALL_PATH"/*; do
+        if [ -d "$directory" ]; then
+            python_paths+=("$(realpath "$directory")")
+        fi
+    done
+
+    # Append each directory to the PATH environment variable
+    {
+        echo "# Add Python to PATH"
+        for path in "${python_paths[@]}"; do
+            echo "export PATH=\"$path:\$PATH\""
+        done
+    } >>"$BASH_PROFILE"
+
+    printf "\nPython paths added to .bash_profile.\n"
 }
 
 ## Main script
 
+# Check Python installation and prompt for installation if necessary
+if ! check_python_installation; then
+    install_python
+fi
+
 # Check if winget is available
 printf "\nChecking for winget...\n"
 if ! command -v winget &>/dev/null; then
-    echo "winget is not installed. Please install winget or run this script on a compatible system."
+    printf "\nwinget is not installed. Please install winget or run this script on a compatible system.\n"
     exit 1
 else
     install_vscode
@@ -144,6 +199,7 @@ if ask "Do you want to create or update .bash_profile in $HOME?"; then
         printf "\n.bash_profile created and configured.\n"
     fi
 fi
+append_path_to_bash_profile
 
 # Copy vimrc
 if ask "Do you want to copy _vimrc to $HOME?"; then
@@ -161,6 +217,26 @@ if ask "Do you want to copy _vimrc to $HOME?"; then
     fi
 fi
 
+# Handle Python linting files
+if [ -d "$PYTHON_DIR" ]; then
+    for file in "$PYTHON_DIR"/*; do
+        if [ -f "$file" ]; then
+            filename=$(basename "$file")
+            # Ask before copying each file
+            if ask "Do you want to copy $filename to your home directory?"; then
+                cp "$file" "$HOME/$filename"
+                printf "\nFile %s has been copied to the home directory.\n" "$filename"
+                # Set file to hidden
+                attrib +h "$HOME/$filename"
+            else
+                printf "\nNo changes made to %s.\n" "$filename"
+            fi
+        fi
+    done
+else
+    printf "\nPython directory not found.\n"
+fi
+
 # Handle vscode files
 printf "\nProcessing VS Code configuration files...\n"
 
@@ -172,22 +248,18 @@ for file in "$VSCODE_DIR"/*; do
             printf "\nA file named %s already exists in the destination.\n" "$filename"
             if ask "Do you want to overwrite the existing file?"; then
                 cp "$file" "$CODE_USER_DIR/$filename"
-                echo "File $filename has been updated in the destination."
+                printf "\nFile %s has been updated in the destination.\n" "$filename"
             else
                 printf "\nNo changes made to the existing file at the destination.\n"
             fi
         else
             if ask "Do you want to copy $filename to the destination?"; then
                 cp "$file" "$CODE_USER_DIR/$filename"
-                echo "File $filename has been copied to the destination."
+                printf "\nFile %s has been copied to the destination.\n" "$filename"
             fi
         fi
     fi
 done
-
-if ask "Do you want to update the system PATH and PYTHONPATH environment variables?"; then
-    update_environment_variables
-fi
 
 printf "\nFinalizing installation...\n"
 
@@ -244,6 +316,12 @@ fi
 printf "\nChecking and setting files as hidden...\n"
 FILES_TO_HIDE=(".gitconfig" ".inputrc" ".viminfo" ".minttyrc" ".bash_history")
 
+# Set GitBash theme to Dracula
+if ask "Do you want to set the Dracula theme for Git Bash?"; then
+    echo "ThemeFile=dracula" >"$MINTTY_CONFIG"
+    echo "Dracula theme set for Git Bash."
+fi
+
 for file in "${FILES_TO_HIDE[@]}"; do
     full_path="$HOME/$file"
     if [ -f "$full_path" ]; then
@@ -258,11 +336,7 @@ for file in "${FILES_TO_HIDE[@]}"; do
     fi
 done
 
-# Set GitBash theme to Dracula
-if ask "Do you want to set the Dracula theme for Git Bash?"; then
-    echo "ThemeFile=dracula" >"$MINTTY_CONFIG"
-    echo "Dracula theme set for Git Bash."
-fi
+source ~/.bash_profile
 
 echo
 echo "Process complete."
