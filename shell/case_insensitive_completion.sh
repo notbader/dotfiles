@@ -8,4 +8,4 @@ if [ ! -a ~/.inputrc ]; then
 fi
 
 # Add shell-option to ~/.inputrc to enable case-insensitive tab completion
-echo 'set completion-ignore-case On' >>./.inputrc
+echo 'set completion-ignore-case On' >>~/.inputrc
