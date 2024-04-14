@@ -14,6 +14,8 @@ BASH_PROFILE="$HOME/.bash_profile"
 VIMRC_FILE="$SHELL_DIR/_vimrc"
 CODE_USER_DIR="$HOME/AppData/Roaming/Code/User"
 MINTTY_CONFIG="$HOME/.minttyrc"
+GIT_CONFIG="$HOME/.gitconfig"
+INCLUDE_PATH="$SHELL_DIR/gitconfig"
 
 # Function to install Visual Studio Code and extensions
 function install_vscode() {
@@ -126,37 +128,37 @@ else
 fi
 
 # Create .bash_profile in $HOME that sources .bashrc in $SHELL_DIR
-printf "\nCreating .bash_profile in %s...\n" "$HOME"
-if [ -f "$BASH_PROFILE" ]; then
-    printf "\n.bash_profile already exists.\n"
-else
-    {
-        echo "#!/bin/bash"
-        echo "# shellcheck disable=SC1091"
-        echo "export SSH_HOME='$SSH_DIR'"
-        echo "if [ -f \"$SHELL_DIR/.bashrc\" ]; then"
-        echo "    source \"$SHELL_DIR/.bashrc\""
-        echo "fi"
-    } >"$BASH_PROFILE"
-    attrib +h "$BASH_PROFILE"
-    printf "\n.bash_profile created and configured.\n"
+if ask "Do you want to create or update .bash_profile in $HOME?"; then
+    if [ -f "$BASH_PROFILE" ]; then
+        printf "\n.bash_profile already exists.\n"
+    else
+        {
+            echo "#!/bin/bash"
+            echo "# shellcheck disable=SC1091"
+            echo "export SSH_HOME='$SSH_DIR'"
+            echo "if [ -f \"$SHELL_DIR/.bashrc\" ]; then"
+            echo "    source \"$SHELL_DIR/.bashrc\""
+            echo "fi"
+        } >"$BASH_PROFILE"
+        attrib +h "$BASH_PROFILE"
+        printf "\n.bash_profile created and configured.\n"
+    fi
 fi
 
 # Copy vimrc
-printf "\nCopying _vimrc to %s...\n" "$HOME"
-
-if [ -f "$HOME" ]; then
-    echo "_vimrc already exists in $HOME."
-    if ask "Do you want to overwrite the existing _vimrc?"; then
-        cp "$VIMRC_FILE" "$HOME"
-        printf "\n%s has been updated in %s.\n" "_vimrc" "$HOME"
+if ask "Do you want to copy _vimrc to $HOME?"; then
+    if [ -f "$HOME/_vimrc" ]; then
+        if ask "Do you want to overwrite the existing _vimrc?"; then
+            cp "$VIMRC_FILE" "$HOME/_vimrc"
+            printf "\n%s has been updated in %s.\n" "_vimrc" "$HOME"
+        else
+            printf "\nNo changes made to the existing _vimrc.\n"
+        fi
     else
-        printf "\nNo changes made to the existing _vimrc.\n"
+        cp "$VIMRC_FILE" "$HOME/_vimrc"
+        attrib +h "$HOME/_vimrc"
+        printf "\n_vimrc has been copied to %s.\n" "$HOME"
     fi
-else
-    cp "$VIMRC_FILE" "$HOME"
-    attrib +h "$HOME/_vimrc"
-    printf "\n%s has been copied to %s.\n" "_vimrc" "$HOME"
 fi
 
 # Handle vscode files
@@ -172,7 +174,7 @@ for file in "$VSCODE_DIR"/*; do
                 cp "$file" "$CODE_USER_DIR/$filename"
                 echo "File $filename has been updated in the destination."
             else
-                echo "No changes made to the existing file at the destination."
+                printf "\nNo changes made to the existing file at the destination.\n"
             fi
         else
             if ask "Do you want to copy $filename to the destination?"; then
@@ -209,16 +211,52 @@ for file in "$DOTFILES_DIR/shell/"*; do
         fi
     fi
 done
+echo '# -------------- End of Dotfiles install ---------------' >>"$BASH_PROFILE"
 
-# Hide specific configuration files in the home directory
-echo
-echo "Setting files as hidden..."
-attrib +h "$HOME/.gitconfig"
-attrib +h "$HOME/.inputrc"
-attrib +h "$HOME/.viminfo"
-attrib +h "$HOME/.minttyrc"
-attrib +h "$HOME/.bash_history"
-echo "Files are now hidden."
+# Check if .gitconfig already exists
+if [ ! -f "$GIT_CONFIG" ]; then
+    printf "\nCreating .gitconfig file...\n"
+    touch "$GIT_CONFIG"
+fi
+
+# Append or update user info in .gitconfig
+if ask "Do you want to append or update user info in .gitconfig?"; then
+    if ! grep -q "\[user\]" "$GIT_CONFIG"; then
+        {
+            echo "[user]"
+            echo "    name = notBader"
+            echo "    email = " # Leave email empty
+        } >>"$GIT_CONFIG"
+    fi
+fi
+
+# Include external git config if it hasn't been included already
+if ask "Do you want to include external git configuration from $INCLUDE_PATH?"; then
+    if ! grep -q "\[include\]" "$GIT_CONFIG"; then
+        echo "[include]" >>"$GIT_CONFIG"
+        echo "    path = $INCLUDE_PATH" >>"$GIT_CONFIG"
+    elif ! grep -q "path = $INCLUDE_PATH" "$GIT_CONFIG"; then
+        sed -i "/\[include\]/a\    path = $INCLUDE_PATH" "$GIT_CONFIG"
+    fi
+fi
+
+# Check and hide specific configuration files in the home directory
+printf "\nChecking and setting files as hidden...\n"
+FILES_TO_HIDE=(".gitconfig" ".inputrc" ".viminfo" ".minttyrc" ".bash_history")
+
+for file in "${FILES_TO_HIDE[@]}"; do
+    full_path="$HOME/$file"
+    if [ -f "$full_path" ]; then
+        if ask "Do you want to hide $file?"; then
+            attrib +h "$full_path"
+            printf "\n%s is now hidden.\n" "$file"
+        else
+            printf "\nNo changes made for %s.\n" "$file"
+        fi
+    else
+        printf "\n%s does not exist at %s.\n" "$file" "$full_path"
+    fi
+done
 
 # Set GitBash theme to Dracula
 if ask "Do you want to set the Dracula theme for Git Bash?"; then
@@ -226,7 +264,6 @@ if ask "Do you want to set the Dracula theme for Git Bash?"; then
     echo "Dracula theme set for Git Bash."
 fi
 
-echo '# -------------- End of Dotfiles install ---------------' >>"$BASH_PROFILE"
 echo
 echo "Process complete."
 echo "========================================"
