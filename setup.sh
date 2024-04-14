@@ -7,13 +7,13 @@ echo "========================================"
 
 # Get the absolute path to the directory containing this script
 DOTFILES_DIR=$(pwd)
+SSH_DIR="$DOTFILES_DIR/.ssh"
 SHELL_DIR="$DOTFILES_DIR/shell"
 VSCODE_DIR="$DOTFILES_DIR/vscode"
 BASH_PROFILE="$HOME/.bash_profile"
 VIMRC_FILE="$SHELL_DIR/_vimrc"
 CODE_USER_DIR="$HOME/AppData/Roaming/Code/User"
 MINTTY_CONFIG="$HOME/.minttyrc"
-RC_FOR_SOURCE="$SHELL_DIR/.bashrc"
 
 # Function to install Visual Studio Code and extensions
 function install_vscode() {
@@ -36,12 +36,12 @@ function install_vscode() {
     if ask "Do you want to install/update Visual Studio Code extensions?"; then
         echo "Installing VS Code extensions..."
         local extensions=(
-            "adpyke.vscode-sql-formatter" "angular.ng-template" "charliermarsh.ruff"
+            "charliermarsh.ruff"
             "dotjoshjohnson.xml" "dracula-theme.theme-dracula-pro" "github.copilot"
-            "github.copilot-chat" "kevinrose.vsc-python-indent" "ms-python.python"
-            "redhat.java" "timonwong.shellcheck" "visualstudioexptteam.vscodeintellicode"
-            "vscjava.vscode-java-pack" "vscodevim.vim" "pkief.material-icon-theme"
-            "formulahendry.code-runner" "foxundermoon.shell-format"
+            "github.copilot-chat" "ms-python.python"
+            "timonwong.shellcheck" "visualstudioexptteam.vscodeintellicode"
+            "vscodevim.vim" "pkief.material-icon-theme"
+            "foxundermoon.shell-format"
         )
 
         for ext in "${extensions[@]}"; do
@@ -128,17 +128,18 @@ fi
 # Create .bash_profile in $HOME that sources .bashrc in $SHELL_DIR
 printf "\nCreating .bash_profile in %s...\n" "$HOME"
 if [ -f "$BASH_PROFILE" ]; then
-    printf "\nbash_profile already exists.\n"
+    printf "\n.bash_profile already exists.\n"
 else
     {
         echo "#!/bin/bash"
         echo "# shellcheck disable=SC1091"
+        echo "export SSH_HOME='$SSH_DIR'"
         echo "if [ -f \"$SHELL_DIR/.bashrc\" ]; then"
         echo "    source \"$SHELL_DIR/.bashrc\""
         echo "fi"
     } >"$BASH_PROFILE"
     attrib +h "$BASH_PROFILE"
-    printf "\nbash_profile created and configured\n"
+    printf "\n.bash_profile created and configured.\n"
 fi
 
 # Copy vimrc
@@ -190,9 +191,9 @@ printf "\nFinalizing installation...\n"
 
 # Source shell scripts in .bashrc, excluding .vimrc and _vimrc files
 BASHRC_SOURCE_HEADER='# -------------- Dotfiles install ---------------'
-if ! grep -qxF "$BASHRC_SOURCE_HEADER" "$RC_FOR_SOURCE"; then
-    echo "" >>"$RC_FOR_SOURCE"
-    echo "$BASHRC_SOURCE_HEADER" >>"$RC_FOR_SOURCE"
+if ! grep -qxF "$BASHRC_SOURCE_HEADER" "$BASH_PROFILE"; then
+    echo "" >>"$BASH_PROFILE"
+    echo "$BASHRC_SOURCE_HEADER" >>"$BASH_PROFILE"
 fi
 
 for file in "$DOTFILES_DIR/shell/"*; do
@@ -201,13 +202,23 @@ for file in "$DOTFILES_DIR/shell/"*; do
         if [[ "$filename" != ".vimrc" && "$filename" != "_vimrc" ]]; then
             if ask "Do you want to source ${filename} in .bashrc?"; then
                 SOURCE_CMD="source \"$file\""
-                if ! grep -qxF "$SOURCE_CMD" "$RC_FOR_SOURCE"; then
-                    echo "$SOURCE_CMD" >>"$RC_FOR_SOURCE"
+                if ! grep -qxF "$SOURCE_CMD" "$BASH_PROFILE"; then
+                    echo "$SOURCE_CMD" >>"$BASH_PROFILE"
                 fi
             fi
         fi
     fi
 done
+
+# Hide specific configuration files in the home directory
+echo
+echo "Setting files as hidden..."
+attrib +h "$HOME/.gitconfig"
+attrib +h "$HOME/.inputrc"
+attrib +h "$HOME/.viminfo"
+attrib +h "$HOME/.minttyrc"
+attrib +h "$HOME/.bash_history"
+echo "Files are now hidden."
 
 # Set GitBash theme to Dracula
 if ask "Do you want to set the Dracula theme for Git Bash?"; then
@@ -215,7 +226,7 @@ if ask "Do you want to set the Dracula theme for Git Bash?"; then
     echo "Dracula theme set for Git Bash."
 fi
 
-echo '# -------------- End of Dotfiles install ---------------' >>"$RC_FOR_SOURCE"
+echo '# -------------- End of Dotfiles install ---------------' >>"$BASH_PROFILE"
 echo
 echo "Process complete."
 echo "========================================"
