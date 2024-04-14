@@ -97,7 +97,10 @@
         "reportUnknownLambdaType": "none"
     },
     "python.analysis.extraPaths": [
-        "~/pyrightconfig.json"
+        "${home}/Desktop/stuff/000_dotfiles/python/pyrightconfig.json"
+    ],
+    "ruff.lint.args": [
+        "--config=${home}/Desktop/stuff/000_dotfiles/python/pyproject.toml"
     ],
     "python.analysis.useLibraryCodeForTypes": true,
     "python.analysis.autoSearchPaths": true,
