@@ -1,6 +1,5 @@
 #!/bin/bash
 # shellcheck disable=SC1091
-# Set SSH directory
 
 # Set default directory
 if [ -z "$PWD" ] || [ "$PWD" == "/" ]; then
@@ -25,6 +24,9 @@ fi
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # Change Prompt
+
+HISTTIMEFORMAT="%d/%m/%y %T "
+
 new_line() {
     printf "\n$ "
 }
@@ -52,4 +54,6 @@ mcd() {
     mkdir -p "$1"
     cd "$1" || exit
 }
-HISTTIMEFORMAT="%d/%m/%y %T "
+
+# For some reason my 'i' key bugs sometimes, so I have to rebind it
+bind "i:self-insert"
