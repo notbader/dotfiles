@@ -63,5 +63,5 @@
         "key": "ctrl+l",
         "command": "workbench.action.focusRightGroup",
         "when": "editorTextFocus && vim.active && vim.mode != 'Insert'"
-    },
+    }
 ]

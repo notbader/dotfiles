@@ -66,6 +66,8 @@
     "files.autoGuessEncoding": true,
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 100,
+    "ruff.lint.enable": true,
+    "ruff.lint.run": "onSave",
     // Python stuff
     "[python]": {
         "editor.formatOnSave": true,
@@ -114,6 +116,7 @@
     "security.workspace.trust.startupPrompt": "never",
     "window.restoreFullscreen": true,
     "window.newWindowDimensions": "maximized",
+    "breadcrumbs.enabled": false,
     // Vim stuff
     "vim.easymotion": true,
     "vim.incsearch": true,
@@ -144,7 +147,10 @@
         "<C-v>": false,
         "<C-c>": false,
         "<C-x>": false,
-        "<C-n>": false
+        "<C-n>": false,
+        "<ESC>": false,
+        "<C-d>": true,
+        "<C-u>": false
     },
     "editor.cursorSurroundingLines": 8,
     "vim.insertModeKeyBindings": [
@@ -160,6 +166,30 @@
         }
     ],
     "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "u"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "undo",
+                    "args": []
+                }
+            ]
+        },
+        {
+            "before": [
+                "<C-r>"
+            ],
+            "after": [],
+            "commands": [
+                {
+                    "command": "redo",
+                    "args": []
+                }
+            ]
+        },
         {
             "before": [
                 "<Leader>",
