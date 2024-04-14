@@ -92,7 +92,8 @@ function check_python_installation() {
         # Check if Python is in PATH
         if ! python --version &>/dev/null; then
             printf "\nPython is not in PATH. Adding to PATH...\n"
-            add_python_to_path "$python_path"
+            add_python_to_path
+
         else
             printf "\nPython is already in PATH.\n"
         fi
@@ -102,42 +103,54 @@ function check_python_installation() {
     fi
 }
 
-# Function to check and update Python path
 function add_python_to_path() {
-    local python_exe_path=$1
-    local python_dir
-    python_dir=$(dirname "$python_exe_path")
-    local scripts_dir="$python_dir/Scripts"
+    echo "Updating environment variables based on Python installation paths..."
 
-    # Use PowerShell to add the Python directory and Scripts directory to PATH and PYTHONPATH
+    # Use PowerShell to handle the path extraction and environment variable update
     powershell.exe -Command "
-    \$python_dir = '${python_dir}'
-    \$scripts_dir = '${scripts_dir}'
+        # Get Python paths from 'where' command, avoiding WindowsApps which often defaults to a stub executable
+        \$pythonExePaths = (Get-Command python.exe -All | Where-Object { \$_ -notlike '*WindowsApps*' }).Source | Select-Object -Unique
+        if (\$pythonExePaths -eq \$null) {
+            Write-Host 'No Python installations found outside of WindowsApps.'
+            return
+        }
 
-    # Add to PATH if not already present
-    \$path = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
-    if (-not \$path.Contains(\$python_dir)) {
-        \$path = \$path + ';' + \$python_dir
-    }
-    if (-not \$path.Contains(\$scripts_dir)) {
-        \$path = \$path + ';' + \$scripts_dir
-    }
-    [System.Environment]::SetEnvironmentVariable('PATH', \$path, [System.EnvironmentVariableTarget]::User)
+        # Prepare the paths to add to PATH and PYTHONPATH
+        \$pathsToAdd = @()
+        foreach (\$path in \$pythonExePaths) {
+            \$dir = Split-Path -Parent \$path
+            if (-not [System.IO.Directory]::Exists(\$dir)) {
+                continue
+            }
+            \$pathsToAdd += \$dir  # Add the base directory
+            \$scriptsPath = Join-Path -Path \$dir -ChildPath 'Scripts'
+            if ([System.IO.Directory]::Exists(\$scriptsPath)) {
+                \$pathsToAdd += \$scriptsPath  # Add the Scripts directory
+            }
+        }
 
-    # Add to PYTHONPATH if not already present
-    \$pythonpath = [System.Environment]::GetEnvironmentVariable('PYTHONPATH', [System.EnvironmentVariableTarget]::User)
-    if (\$null -eq \$pythonpath) {
-        \$pythonpath = ''
-    }
-    if (-not \$pythonpath.Contains(\$python_dir)) {
-        \$pythonpath = \$pythonpath + ';' + \$python_dir
-    }
-    if (-not \$pythonpath.Contains(\$scripts_dir)) {
-        \$pythonpath = \$pythonpath + ';' + \$scripts_dir
-    }
-    [System.Environment]::SetEnvironmentVariable('PYTHONPATH', \$pythonpath, [System.EnvironmentVariableTarget]::User)
+        # Update PATH and PYTHONPATH
+        \$currentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
+        \$currentPythonPath = [System.Environment]::GetEnvironmentVariable('PYTHONPATH', [System.EnvironmentVariableTarget]::User)
+
+        foreach (\$path in \$pathsToAdd) {
+            if (-not \$currentPath.ToLower().Contains(\$path.ToLower())) {
+                \$currentPath += ';'+\$path
+            }
+            if (\$currentPythonPath -eq \$null -or -not \$currentPythonPath.ToLower().Contains(\$path.ToLower())) {
+                if (\$currentPythonPath -ne \$null) {
+                    \$currentPythonPath += ';'
+                }
+                \$currentPythonPath += \$path
+            }
+        }
+
+        [System.Environment]::SetEnvironmentVariable('PATH', \$currentPath, [System.EnvironmentVariableTarget]::User)
+        [System.Environment]::SetEnvironmentVariable('PYTHONPATH', \$currentPythonPath, [System.EnvironmentVariableTarget]::User)
+
     "
-    printf "\nPython directory and Scripts have been added to PATH and PYTHONPATH.\n"
+
+    echo "Environment variables PATH and PYTHONPATH have been updated."
 }
 
 # Function to prompt user to install Python
