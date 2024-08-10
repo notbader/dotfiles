@@ -1,7 +1,6 @@
 # Set environment variables
 $env:POSH_THEMES_PATH = "$HOME\Desktop\stuff\000_dotfiles\oh_my_posh"
-$env:SSH_HOME = "$HOME\Desktop\stuff\000_dotfiles\.ssh"
-
+$env:HOME = "$HOME\Desktop\stuff\000_dotfiles"
 # Initialize Oh-My-Posh theme
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\stelbent-compact.minimal.omp.json" | Invoke-Expression
 
