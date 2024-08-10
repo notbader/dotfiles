@@ -4,7 +4,7 @@
     "terminal.integrated.cursorStyle": "line",
     "terminal.integrated.scrollback": 10000,
     "terminal.integrated.tabs.enabled": false,
-    "terminal.integrated.fontSize": 12,
+    "terminal.integrated.fontSize": 14,
     // Git stuff
     "git.autofetch": true,
     "git.autoStash": true,
@@ -25,8 +25,44 @@
     "editor.formatOnPaste": true,
     "editor.smoothScrolling": true,
     "editor.renderLineHighlight": "none",
-    "editor.fontFamily": "jetbrains mono",
-    "editor.fontLigatures": true,
+    "editor.fontFamily": "Monaspace Neon Var, Fira Code, Monaco, monospace",
+    "editor.fontSize": 14,
+    "editor.fontVariations": "'wght' 350",
+    "editor.fontLigatures": "'calt', 'liga', 'ss03', 'ss04', 'ss06'",
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "comment",
+                "settings": {
+                    "fontStyle": "italic"
+                }
+            },
+            {
+                "scope": "storage,entity,variable",
+                "settings": {
+                    "fontStyle": ""
+                }
+            },
+            {
+                "scope": "string.quoted.docstring.multi.python",
+                "settings": {
+                    "foreground": "#6E738D"
+                }
+            },
+            {
+                "scope": "punctuation.definition.string.begin.python",
+                "settings": {
+                    "foreground": "#6E738D"
+                }
+            },
+            {
+                "scope": "punctuation.definition.string.end.python",
+                "settings": {
+                    "foreground": "#6E738D"
+                }
+            }
+        ]
+    },
     "editor.minimap.renderCharacters": false,
     "editor.minimap.size": "fill",
     "editor.formatOnType": false,
@@ -97,10 +133,11 @@
         "reportUnknownLambdaType": "none"
     },
     "python.analysis.extraPaths": [
-        "C:/Users/balma/Desktop/stuff/000_dotfiles/python/pyrightconfig.json"
+        "~//pyrightconfig.json",
+        "C:\\Users\\Bader.AlMal\\OneDrive - ESA\\Desktop\\stuff\\02_odb_tools"
     ],
     "ruff.lint.args": [
-        "--config=C:/Users/balma/Desktop/stuff/000_dotfiles/python/pyproject.toml"
+        "--config=~//pyproject.toml"
     ],
     "python.analysis.useLibraryCodeForTypes": true,
     "python.analysis.autoSearchPaths": true,
@@ -270,16 +307,6 @@
             "silent": true
         },
         {
-            // Pressing K inserts a line break above the cursor.
-            "before": [
-                "K"
-            ],
-            "commands": [
-                "lineBreakInsert"
-            ],
-            "silent": true
-        },
-        {
             // Pressing the leader key (Spacebar) followed by w splits the editor.
             "before": [
                 "<leader>",
@@ -360,21 +387,6 @@
             ]
         }
     ],
-    //
-    // Custom keybindings for visual
-    //
-    "vim.visualModeKeyBindings": [
-        {
-            "before": [
-                "leader",
-                "c"
-            ],
-            "commands": [
-                "editor.action.commentLine",
-                "extension.vim_escape"
-            ]
-        }
-    ],
     "vim.vimrc.enable": true,
     "vim.vimrc.path": "~//_vimrc",
     "workbench.colorCustomizations": {
@@ -383,5 +395,7 @@
         "statusBar.debuggingBackground": "#f08080",
         "statusBar.foreground": "#ffffff",
         "statusBar.debuggingForeground": "#ffffff"
-    }
+    },
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false
 }
