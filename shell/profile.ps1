@@ -13,6 +13,7 @@ function md5 { Get-FileHash -Algorithm MD5 $args }
 function sha1 { Get-FileHash -Algorithm SHA1 $args }
 function sha256 { Get-FileHash -Algorithm SHA256 $args }
 
+
 # Git functions
 function gs { git status }
 function gd { git diff }
