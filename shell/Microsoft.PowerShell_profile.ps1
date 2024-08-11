@@ -2,9 +2,6 @@
 $env:POSH_THEMES_PATH = "$HOME\Desktop\stuff\000_dotfiles\oh_my_posh"
 $env:HOME = "$HOME\Desktop\stuff\000_dotfiles"
 
-# Set initial directory
-Set-Location -Path "$HOME\Desktop\Stuff"
-
 # Initialize Oh-My-Posh theme
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\stelbent-compact.minimal.omp.json" | Invoke-Expression
 
@@ -119,3 +116,23 @@ function Get-AliasOptions {
 }
 
 Set-Alias aliases Get-AliasOptions
+
+# Function to delete multiple directories
+function rmdir-multi {
+    param(
+        [string[]]$dirs
+    )
+
+    foreach ($dir in $dirs) {
+        $fullPath = (Resolve-Path $dir).Path
+        if (Test-Path $fullPath) {
+            rmdir $fullPath -Recurse -Force
+            Write-Output "Deleted: $fullPath"
+        } else {
+            Write-Output "Directory not found: $fullPath"
+        }
+    }
+}
+
+# Alias for the function
+Set-Alias rm-rf rmdir-multi
