@@ -1,3 +1,42 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = ""
+description = ""
+readme = "README.md"
+license = {text = ""}
+requires-python = ">=3.10"
+version = "1.1.0"
+
+authors = [
+    {name = ""}
+]
+maintainers = [
+    {name = ""}
+]
+
+dependencies = [
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["project_name*"]
+
+[project.scripts]
+odb_tools = "project_tools.runner:main"
+
+[project.urls]
+"Source" = ""
+"Bug Reports" = ""
+
+
+[project.optional-dependencies]
+dev = [
+]
+
+[tool.ruff]
 target-version = "py310"
 
 [tool.ruff.lint]
@@ -21,7 +60,9 @@ exclude = [
   "dist",
   "node_modules",
   "venv",
-  '__pycache__',
+  "tests",
+  "docs",
+  "__pycache__",
 ]
 ignore = [
   "E501", # pycodestyle line too long, handled by black
@@ -41,9 +82,13 @@ ignore = [
   "B010", # flake8-bugbear - do not call setattr with a constant attribute value
   "B008", # flake8-bugbear - Do not perform function call `Parameter` in argument defaults
   "BLE001", # Ruff - Do not catch blind exception
-  "S608", # Ruff - Possbile SQL injection
+  "S608", # Ruff - Possible SQL injection
   "S603", # Ruff - `subprocess` call: check for execution of untrusted input
   "S101", # Ruff - Use of `assert` detected
+  "S314", # Ruff - Using `xml` to parse untrusted data is known to be vulnerable to XML attacks; use `defusedxml` equivalents
+  "S320", # Ruff - Same as above
+  "ANN101", # flake8-annotations - Missing type annotation for Self
+  "UP031", # pyupgrade - Checks for printf-style string formatting, and offers to replace it with str.format calls.
 ]
 select = [
   "A", # flake8-builtins
@@ -81,14 +126,11 @@ select = [
   "YTT", # flake8-2020
 ]
 
-
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.pep8-naming]
-classmethod-decorators = [
-  "classmethod",
-]
+classmethod-decorators = ["classmethod"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

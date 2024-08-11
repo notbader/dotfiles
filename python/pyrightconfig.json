@@ -1,8 +1,12 @@
 {
-    "include": [],
+    "include": [
+        ""
+    ],
+    "exclude": [
+        "tests",
+        "docs"
+    ],
     "stubPath": "./.py-stubs",
-    "venvPath": ".",
-    "venv": ".venv",
     "pythonPlatform": "All",
     "pythonVersion": "3.10",
     "enableTypeIgnoreComments": true,
@@ -33,7 +37,7 @@
     "reportUnboundVariable": "warning",
     "reportUndefinedVariable": "warning",
     "reportUnknownArgumentType": "none",
-    "reportUnknownLambdaType": "warning",
+    "reportUnknownLambdaType": "none",
     "reportUnknownMemberType": "none",
     "reportUnknownParameterType": "error",
     "reportUnknownVariableType": "none",
@@ -49,5 +53,6 @@
     "reportUnusedVariable": "warning",
     "strictDictionaryInference": true,
     "strictListInference": true,
-    "strictParameterNoneValue": true
+    "strictParameterNoneValue": true,
+    "typeCheckingMode": "strict"
 }
