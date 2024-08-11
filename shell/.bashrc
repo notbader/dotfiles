@@ -2,14 +2,9 @@
 #
 # Bash settings
 export SSH_HOME='$HOME/Desktop/stuff/000_dotfiles/.ssh'
+SSH_ENV="$HOME/Desktop/stuff/000_dotfiles/.ssh/agent-environment"
 
-# colored GCC warnings and errors
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-
-source "$HOME/Desktop/stuff/000_dotfiles/shell/create_input_rc.sh"
 source "$HOME/Desktop/stuff/000_dotfiles/shell/ssh_agent_auto_start.sh"
-source "$HOME/Desktop/stuff/000_dotfiles/shell/git_aliases.sh"
 
 # Oh my posh settings
 OH_MY_POSH_DIR="$HOME/Desktop/stuff/000_dotfiles/oh_my_posh"
@@ -30,33 +25,98 @@ cd() {
         builtin cd "$@" || exit
     fi
 }
-
-# enable color support of ls and grep
-if [ -x /usr/bin/dircolors ]; then
-    if test -r ~/.dircolors; then
-        eval "$(dircolors -b ~/.dircolors)"
-    else
-        eval "$(dircolors -b)"
-    fi
-    alias ll='ls -lhHA --color=auto'
-    alias ls="ls -CFA --color=auto"
-    alias llr="ls -lhHAr --color=auto"
-    alias llR="ls -lhHAR --color=auto"
-    alias lsl="ls -lhHFA | less --color=auto"
-    alias sl="ls --color=auto"
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
 # Aliases
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias mkdir="mkdir -pv"
+alias ll='ls -lhHA --color=auto'
+alias ls="ls -CFA --color=auto"
+alias llr="ls -lhHAr --color=auto"
+alias llR="ls -lhHAR --color=auto"
+alias lsl="ls -lhHFA | less --color=auto"
+alias sl="ls --color=auto"
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias gs='git status'
+alias gd='git diff'
+alias gl='git log'
+alias gc='git checkout'
+alias gp='git push'
+alias gm='git merge'
+alias gpl='git pull'
+alias dotcommit="git add . && git commit -m '.'"
+
+
 
 # Create a directory and cd into it
 mcd() {
     mkdir -p "$1"
     cd "$1" || exit
 }
+
+
+function start_agent {
+    echo "Initialising new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' >"${SSH_ENV}"
+    echo "SSH agent started successfully."
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" >/dev/null
+    /usr/bin/ssh-add
+}
+
+# Source SSH settings, if applicable
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" >/dev/null
+    # Check if the SSH agent is still running
+    if ! ps -p "${SSH_AGENT_PID}" >/dev/null; then
+        echo "SSH agent not active, starting new agent..."
+        start_agent
+    fi
+else
+    echo "SSH environment file not found, starting new agent..."
+    start_agent
+fi
+
+# If ~/.inputrc doesn't exist yet: First include the original /etc/inputrc
+# so it won't get overridden
+if [ ! -f ~/.inputrc ]; then
+    include="/etc/inputrc"
+    echo "include $include" >~/.inputrc
+fi
+
+# Add useful shell options to ~/.inputrc
+
+# Enable case-insensitive tab completion
+echo 'set completion-ignore-case on' >>~/.inputrc
+
+# Disable terminal bell sounds
+echo 'set bell-style none' >>~/.inputrc
+
+# Prevent display of control characters (like ^C for Ctrl+C)
+echo 'set echo-control-characters off' >>~/.inputrc
+
+# Treat hyphens and underscores as equivalent when completing
+echo 'set completion-map-case on' >>~/.inputrc
+
+# Append the / character to the end of symlinked directories when completing
+echo 'set mark-symlinked-directories on' >>~/.inputrc
+
+# Enable colors when completing filenames and directories
+echo 'set colored-stats on' >>~/.inputrc
+
+# Completion matches of multiple items highlight the matching prefix in color
+echo 'set colored-completion-prefix on' >>~/.inputrc
+
+# Enable menu-complete for cycling through completion options
+echo 'TAB: menu-complete' >>~/.inputrc
+echo '"\e[Z": menu-complete-backward' >>~/.inputrc
+
+# Enable incremental history navigation with the UP and DOWN arrow keys
+echo '"\e[A": history-search-backward' >>~/.inputrc
+echo '"\e[B": history-search-forward' >>~/.inputrc
+
+# Override to ensure the 'i' key works correctly
+echo '"i": self-insert' >>~/.inputrc
+echo '"I": self-insert' >>~/.inputrc

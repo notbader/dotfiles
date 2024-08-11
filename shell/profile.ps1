@@ -1,22 +1,17 @@
 # Set environment variables
 $env:POSH_THEMES_PATH = "$HOME\Desktop\stuff\000_dotfiles\oh_my_posh"
-$env:HOME = "$HOME\Desktop\stuff\000_dotfiles"
-
+$MyCustomHome = "$HOME\Desktop\stuff\000_dotfiles"
 # Initialize Oh-My-Posh theme
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\stelbent-compact.minimal.omp.json" | Invoke-Expression
 
 
-# Direct aliases
 Set-Alias .. cd..
-Set-Alias ... cd...
-Set-Alias .... cd...
 Set-Alias gth GoToHome
 
 # Compute file hashes - useful for checking successful downloads
-function md5    { Get-FileHash -Algorithm MD5 $args }
-function sha1   { Get-FileHash -Algorithm SHA1 $args }
+function md5 { Get-FileHash -Algorithm MD5 $args }
+function sha1 { Get-FileHash -Algorithm SHA1 $args }
 function sha256 { Get-FileHash -Algorithm SHA256 $args }
-
 
 # Git functions
 function gs { git status }
@@ -46,7 +41,7 @@ function mkdir {
 
 # Go to Home directory function
 function GoToHome {
-    Set-Location -Path "$HOME\Desktop\Stuff"
+    Set-Location -Path "$MyCustomHome\Desktop\Stuff"
 }
 
 
@@ -54,7 +49,8 @@ function GoToHome {
 function dirs {
     if ($args.Count -gt 0) {
         Get-ChildItem -Recurse -Include "$args" | ForEach-Object FullName
-    } else {
+    }
+    else {
         Get-ChildItem -Recurse | ForEach-Object FullName
     }
 }
@@ -63,10 +59,11 @@ function dirs {
 # Start a new elevated process or PowerShell instance
 function admin {
     if ($args.Count -gt 0) {
-       $argList = "& '" + $args + "'"
-       Start-Process "$psHome\powershell.exe" -Verb runAs -ArgumentList $argList
-    } else {
-       Start-Process "$psHome\powershell.exe" -Verb runAs
+        $argList = "& '" + $args + "'"
+        Start-Process "$psHome\powershell.exe" -Verb runAs -ArgumentList $argList
+    }
+    else {
+        Start-Process "$psHome\powershell.exe" -Verb runAs
     }
 }
 
@@ -76,9 +73,9 @@ Set-Alias -Name sudo -Value admin
 
 
 # Drive shortcuts
-function HKLM  { Set-Location HKLM: }
-function HKCU  { Set-Location HKCU: }
-function Env:  { Set-Location Env: }
+function HKLM { Set-Location HKLM: }
+function HKCU { Set-Location HKCU: }
+function Env: { Set-Location Env: }
 
 # Creates drive shortcut for main Folder, if current user account is using it
 if (Test-Path "$env:USERPROFILE\Desktop\Stuff") {
@@ -105,14 +102,15 @@ function Edit-Nvim {
 function Edit-Profile {
     if ($host.Name -match "ise") {
         $psISE.CurrentPowerShellTab.Files.Add($PROFILE)
-    } else {
+    }
+    else {
         nvim $PROFILE
     }
 }
 
 # Get alias options
 function Get-AliasOptions {
-    Get-Alias | Format-Table Name,Definition,Options
+    Get-Alias | Format-Table Name, Definition, Options
 }
 
 Set-Alias aliases Get-AliasOptions
@@ -128,7 +126,8 @@ function rmdir-multi {
         if (Test-Path $fullPath) {
             rmdir $fullPath -Recurse -Force
             Write-Output "Deleted: $fullPath"
-        } else {
+        }
+        else {
             Write-Output "Directory not found: $fullPath"
         }
     }
