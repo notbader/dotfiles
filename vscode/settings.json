@@ -1,17 +1,17 @@
 {
-    // Terminal stuff
+    // Looks
+    "editor.fontFamily": "Monaspace Neon Var, Fira Code, Monaco, monospace",
+    "editor.fontSize": 13,
+    "editor.fontLigatures": true,
+    "workbench.colorTheme": "Nord Deep",
+    // Terminal and Git stuff
+    "terminal.integrated.fontFamily": "FiraMono Nerd Font",
     "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.cursorStyle": "line",
     "terminal.integrated.scrollback": 10000,
     "terminal.integrated.tabs.enabled": false,
-    "terminal.integrated.fontSize": 14,
-    // Git stuff
-    "git.autofetch": true,
-    "git.autoStash": true,
-    "git.mergeEditor": true,
-    "git.confirmSync": false,
-    "git.enableSmartCommit": true,
-    "git.openRepositoryInParentFolders": "always",
+    "terminal.integrated.fontSize": 13,
+    "diffEditor.ignoreTrimWhitespace": false,
     // Zen mode stuff
     "zenMode.hideStatusBar": false,
     "zenMode.hideLineNumbers": false,
@@ -21,90 +21,57 @@
     "window.commandCenter": false,
     "workbench.layoutControl.enabled": false,
     "workbench.editor.editorActionsLocation": "hidden",
-    // Editor stuff
-    "editor.formatOnPaste": true,
+    // Make minimal
+    "workbench.activityBar.location": "top",
+    "editor.scrollbar.vertical": "hidden",
+    "editor.scrollbar.horizontal": "hidden",
     "editor.smoothScrolling": true,
     "editor.renderLineHighlight": "none",
-    "editor.fontFamily": "Monaspace Neon Var, Fira Code, Monaco, monospace",
-    "editor.fontSize": 14,
-    "editor.fontVariations": "'wght' 350",
-    "editor.fontLigatures": "'calt', 'liga', 'ss03', 'ss04', 'ss06'",
-    "editor.tokenColorCustomizations": {
-        "textMateRules": [
-            {
-                "scope": "comment",
-                "settings": {
-                    "fontStyle": "italic"
-                }
-            },
-            {
-                "scope": "storage,entity,variable",
-                "settings": {
-                    "fontStyle": ""
-                }
-            },
-            {
-                "scope": "string.quoted.docstring.multi.python",
-                "settings": {
-                    "foreground": "#6E738D"
-                }
-            },
-            {
-                "scope": "punctuation.definition.string.begin.python",
-                "settings": {
-                    "foreground": "#6E738D"
-                }
-            },
-            {
-                "scope": "punctuation.definition.string.end.python",
-                "settings": {
-                    "foreground": "#6E738D"
-                }
-            }
-        ]
-    },
+    "symbols.hidesExplorerArrows": true,
+    "editor.overviewRulerBorder": false,
+    // Minimap
+    "editor.minimap.enabled": false,
     "editor.minimap.renderCharacters": false,
     "editor.minimap.size": "fill",
-    "editor.formatOnType": false,
     "editor.minimap.showSlider": "always",
     "editor.minimap.maxColumn": 100,
-    "editor.inlineSuggest.enabled": true,
-    "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 120,
-    "editor.gotoLocation.multipleDefinitions": "goto",
-    "editor.gotoLocation.multipleImplementations": "goto",
-    "editor.hover.delay": 500,
-    "editor.semanticHighlighting.enabled": true,
+    // Formatting stuff
     "editor.unicodeHighlight.ambiguousCharacters": false,
     "editor.bracketPairColorization.enabled": true,
     "editor.insertSpaces": true,
     "editor.renderWhitespace": "none",
     "editor.renderControlCharacters": true,
+    "editor.formatOnType": false,
+    "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
-    "editor.quickSuggestions": {
-        "other": "off"
-    },
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120,
     "editor.tabSize": 4,
     "editor.rulers": [
         120
     ],
-    "explorer.fileNesting.enabled": true,
-    "explorer.fileNesting.patterns": {
-        "package.json": "package-lock.json, .npmrc, yarn.lock, .yarnrc, .editorconfig, .prettier*, .gitignore, .eslintrc.json, jest.*.js, nx.json, tsconfig.*.json"
-    },
-    "explorer.openEditors.visible": 10,
-    "explorer.autoReveal": false,
-    "search.collapseResults": "alwaysExpand",
-    "diffEditor.ignoreTrimWhitespace": false,
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
     "files.autoGuessEncoding": true,
+    //Suggestions
+    "editor.inlineSuggest.enabled": true,
+    "editor.quickSuggestions": {
+        "other": "off"
+    },
+    // QoL
+    "editor.hover.delay": 500,
+    "editor.semanticHighlighting.enabled": true,
+    "editor.matchBrackets": "never",
+    "editor.selectionHighlight": false,
     "files.autoSave": "afterDelay",
     "files.autoSaveDelay": 100,
+    "workbench.startupEditor": "none",
+    "security.workspace.trust.untrustedFiles": "open",
+    // Python stuff
+    "ruff.configuration": "./pyproject.toml",
     "ruff.lint.enable": true,
     "ruff.lint.run": "onSave",
-    // Python stuff
     "[python]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "charliermarsh.ruff",
@@ -133,30 +100,11 @@
         "reportUnknownLambdaType": "none"
     },
     "python.analysis.extraPaths": [
-        "~//pyrightconfig.json",
+        ".//pyrightconfig.json",
         "C:\\Users\\Bader.AlMal\\OneDrive - ESA\\Desktop\\stuff\\02_odb_tools"
-    ],
-    "ruff.lint.args": [
-        "--config=~//pyproject.toml"
     ],
     "python.analysis.useLibraryCodeForTypes": true,
     "python.analysis.autoSearchPaths": true,
-    // Workspace and color stuff
-    "workbench.tree.indent": 12,
-    "workbench.tree.renderIndentGuides": "always",
-    "workbench.colorTheme": "Dracula Pro",
-    "workbench.startupEditor": "newUntitledFile",
-    "workbench.statusBar.visible": true,
-    "workbench.panel.defaultLocation": "bottom",
-    "workbench.panel.opensMaximized": "preserve",
-    "explorer.compactFolders": false,
-    "debug.toolBarLocation": "commandCenter",
-    "security.workspace.trust.untrustedFiles": "open",
-    "security.workspace.trust.enabled": true,
-    "security.workspace.trust.startupPrompt": "never",
-    "window.restoreFullscreen": true,
-    "window.newWindowDimensions": "maximized",
-    "breadcrumbs.enabled": false,
     // Vim stuff
     "vim.easymotion": true,
     "vim.incsearch": true,
@@ -164,7 +112,6 @@
     "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
     "vim.leader": "<space>",
-    "vim.highlightedyank.enable": true,
     "vim.statusBarColorControl": true,
     "vim.statusBarColors.normal": [
         "#8FBCBB",
@@ -242,7 +189,7 @@
         {
             "before": [
                 "<Leader>",
-                "h"
+                "d"
             ],
             "after": [
                 "^"
@@ -264,17 +211,6 @@
             "after": [
                 "5",
                 "k"
-            ]
-        },
-        {
-            // Pressing the leader key (Spacebar) followed by d deletes the current line.
-            "before": [
-                "<leader>",
-                "d"
-            ],
-            "after": [
-                "d",
-                "d"
             ]
         },
         {
@@ -314,33 +250,6 @@
             ],
             "commands": [
                 "workbench.action.splitEditor"
-            ]
-        },
-        {
-            // Pressing the leader key (Spacebar) followed by e toggles the sidebar visibility.
-            "before": [
-                "<leader>",
-                "e"
-            ],
-            "commands": [
-                "workbench.view.explorer"
-            ]
-        },
-        //  "ctrl+h": Focuses on the left editor group when the text editor is focused, Vim extension is active, and Vim is not in Insert mode.
-        {
-            "before": [
-                "<c-k>"
-            ],
-            "commands": [
-                "cursorPageUp"
-            ]
-        },
-        {
-            "before": [
-                "<c-j>"
-            ],
-            "commands": [
-                "cursorPageDown"
             ]
         },
         {
@@ -387,15 +296,25 @@
             ]
         }
     ],
-    "vim.vimrc.enable": true,
-    "vim.vimrc.path": "~//_vimrc",
+    "vim.visualModeKeyBindings": [
+        {
+            "before": [
+                "leader",
+                "c"
+            ],
+            "commands": [
+                "editor.action.commentLine",
+                "extension.vim_escape"
+            ]
+        }
+    ],
     "workbench.colorCustomizations": {
-        "statusBar.background": "#f08080",
-        "statusBar.noFolderBackground": "#f08080",
-        "statusBar.debuggingBackground": "#f08080",
-        "statusBar.foreground": "#ffffff",
-        "statusBar.debuggingForeground": "#ffffff"
+        "statusBar.background": "#8FBCBB",
+        "statusBar.noFolderBackground": "#8FBCBB",
+        "statusBar.debuggingBackground": "#8FBCBB",
+        "statusBar.foreground": "#434C5E",
+        "statusBar.debuggingForeground": "#434C5E"
     },
-    "explorer.confirmDragAndDrop": false,
-    "explorer.confirmDelete": false
+    "vim.vimrc.enable": true,
+    "vim.vimrc.path": "~\\.vsrc",
 }

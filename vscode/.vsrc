@@ -1,0 +1,74 @@
+" Use system clipboard
+set clipboard=unnamedplus
+
+" General Settings
+set nocompatible                " Disable compatibility with vi
+set splitbelow                  " Open new horizontal splits below
+set splitright                  " Open new vertical splits to the right
+set encoding=utf-8              " Use UTF-8 encoding
+set hidden                      " Allow hidden buffers
+set nobackup                    " Disable backup files
+set nowritebackup               " Disable backup before overwriting
+set cmdheight=2                 " More space for displaying messages
+set updatetime=300              " Faster completion
+set shortmess+=c                " Avoid showing extra messages when using completion
+set termguicolors               " Enable true color support
+syntax on                       " Enable syntax highlighting
+filetype plugin indent on       " Enable filetype detection, plugins, and indentation
+set foldmethod=indent           " Fold based on indentation
+set foldlevel=99                " Start with all folds open
+let python_highlight_all=1      " Highlight all Python syntax
+set nu                          " Show line numbers
+set relativenumber              " show line number on the current line relative to other lines
+
+
+
+" Tab and Indentation Settings
+set tabstop=4                   " Number of spaces in a tab
+set shiftwidth=4                " Number of spaces to use for autoindent
+set expandtab                   " Use spaces instead of tabs
+set smarttab                    " sets `tabstop` number of spaces when the tab is pressed
+set softtabstop=4               " sets 4 spaces when tab or backspace is pressed
+
+" Leader Key
+let mapleader = " "
+
+
+" Window Navigation Mappings
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" Folding with the Spacebar
+nnoremap <leader> fo
+
+
+" Clipboard Mappings
+vnoremap <C-S-X> "+x           " Ctrl-Shift-X to cut
+vnoremap <C-S-C> "+y           " Ctrl-Shift-C to copy
+map <C-S-V> "+gP               " Ctrl-Shift-V to paste
+imap <C-S-V> <C-R>+
+cmap <C-S-V> <C-R>+
+
+" Ensure visual selections with vG extend to the end of the line, and vgg to the beginning
+vnoremap G G$
+vnoremap gg gg^
+
+" Ensure G in normal mode goes to the end of the line, and gg to the beginning
+nnoremap G G$
+nnoremap gg gg^
+
+" Leader Key Mappings
+nnoremap <leader>a ggVG        " Select all
+nnoremap <leader>w :tabclose<CR> " Close current tab
+nnoremap <leader>] >>          " Indent line or selection
+vnoremap <leader>] >gv
+nnoremap <leader>[ <<          " De-indent line or selection
+vnoremap <leader>[ <gv
+
+" Undo and Redo Mappings
+nnoremap <C-z> u               " Ctrl-Z to undo
+inoremap <C-z> <C-o>u
+nnoremap <C-r> <C-r>           " Ctrl-R to redo
+inoremap <C-r> <C-o><C-r>
