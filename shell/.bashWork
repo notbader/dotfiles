@@ -1,26 +1,23 @@
 #!/bin/bash
-#
-# Bash settings
-export SSH_HOME='$HOME/Desktop/stuff/000_dotfiles/.ssh'
-SSH_ENV="$HOME/Desktop/stuff/000_dotfiles/.ssh/agent-environment"
 
-source "$HOME/Desktop/stuff/000_dotfiles/shell/ssh_agent_auto_start.sh"
+export SSH_HOME='/c/Users/Bader.AlMal/OneDrive - ESA/Desktop/stuff/000_dotfiles/.ssh'
+SSH_ENV="$HOME/OneDrive - ESA/Desktop/stuff/000_dotfiles/.ssh/agent-environment"
 
 # Oh my posh settings
-OH_MY_POSH_DIR="$HOME/Desktop/stuff/000_dotfiles/oh_my_posh"
+OH_MY_POSH_DIR="$HOME/OneDrive - ESA/Desktop/stuff/000_dotfiles/oh_my_posh"
 THEME_FILE="stelbent-compact.minimal.omp.json"
 eval "$(oh-my-posh init bash --config "$OH_MY_POSH_DIR/$THEME_FILE")"
 
 
 # Set default directory when opening terminal (except when right-clicking and opening terminal)
 if [ "$PWD" == "$HOME" ] || [ "$PWD" == "/" ]; then
-    cd "$HOME/Desktop/stuff" || exit
+    cd "$HOME/OneDrive - ESA/Desktop/stuff" || exit
 fi
 
 # Set home directory
 cd() {
     if [ "$#" -eq 0 ]; then
-        builtin cd "$HOME/Desktop/stuff" || exit
+        builtin cd "$HOME/OneDrive - ESA/Desktop/stuff" || exit
     else
         builtin cd "$@" || exit
     fi
@@ -86,39 +83,37 @@ fi
 if [ ! -f ~/.inputrc ]; then
     include="/etc/inputrc"
     echo "include $include" >~/.inputrc
+
+    # Enable case-insensitive tab completion
+    echo 'set completion-ignore-case on' >>~/.inputrc
+
+    # Disable terminal bell sounds
+    echo 'set bell-style none' >>~/.inputrc
+
+    # Prevent display of control characters (like ^C for Ctrl+C)
+    echo 'set echo-control-characters off' >>~/.inputrc
+
+    # Treat hyphens and underscores as equivalent when completing
+    echo 'set completion-map-case on' >>~/.inputrc
+
+    # Append the / character to the end of symlinked directories when completing
+    echo 'set mark-symlinked-directories on' >>~/.inputrc
+
+    # Enable colors when completing filenames and directories
+    echo 'set colored-stats on' >>~/.inputrc
+
+    # Completion matches of multiple items highlight the matching prefix in color
+    echo 'set colored-completion-prefix on' >>~/.inputrc
+
+    # Enable menu-complete for cycling through completion options
+    echo 'TAB: menu-complete' >>~/.inputrc
+    echo '"\e[Z": menu-complete-backward' >>~/.inputrc
+
+    # Enable incremental history navigation with the UP and DOWN arrow keys
+    echo '"\e[A": history-search-backward' >>~/.inputrc
+    echo '"\e[B": history-search-forward' >>~/.inputrc
+
+    # Override to ensure the 'i' key works correctly
+    echo '"i": self-insert' >>~/.inputrc
+    echo '"I": self-insert' >>~/.inputrc
 fi
-
-# Add useful shell options to ~/.inputrc
-
-# Enable case-insensitive tab completion
-echo 'set completion-ignore-case on' >>~/.inputrc
-
-# Disable terminal bell sounds
-echo 'set bell-style none' >>~/.inputrc
-
-# Prevent display of control characters (like ^C for Ctrl+C)
-echo 'set echo-control-characters off' >>~/.inputrc
-
-# Treat hyphens and underscores as equivalent when completing
-echo 'set completion-map-case on' >>~/.inputrc
-
-# Append the / character to the end of symlinked directories when completing
-echo 'set mark-symlinked-directories on' >>~/.inputrc
-
-# Enable colors when completing filenames and directories
-echo 'set colored-stats on' >>~/.inputrc
-
-# Completion matches of multiple items highlight the matching prefix in color
-echo 'set colored-completion-prefix on' >>~/.inputrc
-
-# Enable menu-complete for cycling through completion options
-echo 'TAB: menu-complete' >>~/.inputrc
-echo '"\e[Z": menu-complete-backward' >>~/.inputrc
-
-# Enable incremental history navigation with the UP and DOWN arrow keys
-echo '"\e[A": history-search-backward' >>~/.inputrc
-echo '"\e[B": history-search-forward' >>~/.inputrc
-
-# Override to ensure the 'i' key works correctly
-echo '"i": self-insert' >>~/.inputrc
-echo '"I": self-insert' >>~/.inputrc
