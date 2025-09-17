@@ -1,10 +1,10 @@
 {
-    // Looks
+    "ruff.interpreter": [
+        "C:\\Users\\balma\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+    ],
     "editor.fontFamily": "Monaspace Neon Var, Fira Code, Monaco, monospace",
     "editor.fontSize": 13,
     "editor.fontLigatures": true,
-    "workbench.colorTheme": "Nord Deep",
-    // Terminal and Git stuff
     "terminal.integrated.fontFamily": "FiraMono Nerd Font",
     "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.cursorStyle": "line",
@@ -12,30 +12,20 @@
     "terminal.integrated.tabs.enabled": false,
     "terminal.integrated.fontSize": 13,
     "diffEditor.ignoreTrimWhitespace": false,
-    // Zen mode stuff
     "zenMode.hideStatusBar": false,
     "zenMode.hideLineNumbers": false,
     "zenMode.restore": true,
     "zenMode.centerLayout": true,
-    // Workspace and color stuff
     "window.commandCenter": false,
-    "workbench.layoutControl.enabled": false,
     "workbench.editor.editorActionsLocation": "hidden",
-    // Make minimal
-    "workbench.activityBar.location": "top",
-    "editor.scrollbar.vertical": "hidden",
-    "editor.scrollbar.horizontal": "hidden",
     "editor.smoothScrolling": true,
     "editor.renderLineHighlight": "none",
-    "symbols.hidesExplorerArrows": true,
     "editor.overviewRulerBorder": false,
-    // Minimap
-    "editor.minimap.enabled": false,
+    "editor.minimap.enabled": true,
     "editor.minimap.renderCharacters": false,
     "editor.minimap.size": "fill",
     "editor.minimap.showSlider": "always",
     "editor.minimap.maxColumn": 100,
-    // Formatting stuff
     "editor.unicodeHighlight.ambiguousCharacters": false,
     "editor.bracketPairColorization.enabled": true,
     "editor.insertSpaces": true,
@@ -54,24 +44,20 @@
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
     "files.autoGuessEncoding": true,
-    //Suggestions
     "editor.inlineSuggest.enabled": true,
-    "editor.quickSuggestions": {
-        "other": "off"
-    },
-    // QoL
+    // "editor.quickSuggestions": {
+    //     "other": "off"
+    // },
     "editor.hover.delay": 500,
     "editor.semanticHighlighting.enabled": true,
     "editor.matchBrackets": "never",
     "editor.selectionHighlight": false,
     "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 100,
+    "files.autoSaveDelay": 500,
     "workbench.startupEditor": "none",
     "security.workspace.trust.untrustedFiles": "open",
-    // Python stuff
     "ruff.configuration": "./pyproject.toml",
     "ruff.lint.enable": true,
-    "ruff.lint.run": "onSave",
     "[python]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "charliermarsh.ruff",
@@ -84,28 +70,9 @@
         }
     },
     "python.languageServer": "Pylance",
-    "python.analysis.typeCheckingMode": "strict",
-    "python.analysis.importFormat": "absolute",
-    "python.analysis.stubPath": "typings",
-    "python.analysis.diagnosticSeverityOverrides": {
-        "reportMissingImports": "error",
-        "reportMissingModuleSource": "error",
-        "reportMissingTypeStubs": "none",
-        "reportGeneralTypeIssues": "error",
-        "reportUnknownVariableType": "none", // Disables warnings for variables with partially unknown types
-        "reportUnknownMemberType": "none", // Disables warnings for members with partially unknown types
-        "reportUnknownArgumentType": "none",
-        "reportUnknownParameterType": "none",
-        "reportPartialTypeErrors": "none", // Specifically disables partial unknown type warnings
-        "reportUnknownLambdaType": "none"
-    },
-    "python.analysis.extraPaths": [
-        ".//pyrightconfig.json",
-        "C:\\Users\\Bader.AlMal\\OneDrive - ESA\\Desktop\\stuff\\02_odb_tools"
-    ],
-    "python.analysis.useLibraryCodeForTypes": true,
-    "python.analysis.autoSearchPaths": true,
-    // Vim stuff
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
     "vim.easymotion": true,
     "vim.incsearch": true,
     "vim.useSystemClipboard": true,
@@ -142,7 +109,6 @@
     "editor.cursorSurroundingLines": 8,
     "vim.insertModeKeyBindings": [
         {
-            // Pressing j twice ("before": ["j", "j"]) simulates the Esc key ("after": ["<Esc>"]).
             "before": [
                 "j",
                 "j"
@@ -214,7 +180,6 @@
             ]
         },
         {
-            // Pressing ctrl+n clears search highlighting
             "before": [
                 "<C-n>"
             ],
@@ -243,7 +208,6 @@
             "silent": true
         },
         {
-            // Pressing the leader key (Spacebar) followed by w splits the editor.
             "before": [
                 "<leader>",
                 "w"
@@ -253,7 +217,6 @@
             ]
         },
         {
-            // Pressing the leader key (Spacebar) followed by c comments the current line.
             "before": [
                 "<leader>",
                 "c"
@@ -263,7 +226,6 @@
             ]
         },
         {
-            // Pressing the leader key (Spacebar) followed by o, g shows all symbols in the workspace.
             "before": [
                 "<leader>",
                 "o",
@@ -274,7 +236,6 @@
             ]
         },
         {
-            // Pressing the leader key (Spacebar) followed by o, o shows all open editors in the active group.
             "before": [
                 "<leader>",
                 "o",
@@ -285,7 +246,6 @@
             ]
         },
         {
-            // Pressing the leader key (Spacebar) followed by o, p opens the quick open panel.
             "before": [
                 "leader",
                 "o",
@@ -316,5 +276,39 @@
         "statusBar.debuggingForeground": "#434C5E"
     },
     "vim.vimrc.enable": true,
-    "vim.vimrc.path": "~\\.vsrc",
+    "vim.vimrc.path": "~\\.vscodevimrc",
+    "explorer.confirmDelete": false,
+    "workbench.colorTheme": "Monokai Pro (Filter Octagon)",
+    "workbench.editorAssociations": {
+        "*.copilotmd": "vscode.markdown.preview.editor",
+        "*.xls": "default"
+    },
+    "debug.disassemblyView.showSourceCode": false,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "python.createEnvironment.trigger": "off",
+    "chat.agent.maxRequests": 30,
+    "github.copilot.chat.codesearch.enabled": true,
+    "remote.SSH.remotePlatform": {
+        "biomcd": "linux"
+    },
+    "extensions.ignoreRecommendations": true,
+    "hexeditor.columnWidth": 16,
+    "hexeditor.showDecodedText": true,
+    "hexeditor.defaultEndianness": "little",
+    "hexeditor.inspectorType": "aside",
+    "python.analysis.completeFunctionParens": true,
+    "github.copilot.chat.terminalChatLocation": "terminal",
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "github.copilot.chat.agent.thinkingTool": true,
+    "github.copilot.chat.editor.temporalContext.enabled": true,
+    "github.copilot.chat.edits.temporalContext.enabled": true,
+    "github.copilot.chat.generateTests.codeLens": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "workbench.iconTheme": "Monokai Pro (Filter Octagon) Icons",
+    "cursor.cpp.disabledLanguages": [
+        "plaintext",
+        "markdown",
+        "scminput"
+    ],
+    "C_Cpp.default.intelliSenseMode": "windows-gcc-x64"
 }
