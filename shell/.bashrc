@@ -1,13 +1,10 @@
 #!/bin/bash
 #
 # Bash settings
-export SSH_HOME='$HOME/Desktop/stuff/000_dotfiles/.ssh'
-SSH_ENV="$HOME/Desktop/stuff/000_dotfiles/.ssh/agent-environment"
-
-source "$HOME/Desktop/stuff/000_dotfiles/shell/ssh_agent_auto_start.sh"
 
 # Oh my posh settings
 OH_MY_POSH_DIR="$HOME/Desktop/stuff/000_dotfiles/oh_my_posh"
+export POSH_AUTO_UPGRADE=true
 THEME_FILE="stelbent-compact.minimal.omp.json"
 eval "$(oh-my-posh init bash --config "$OH_MY_POSH_DIR/$THEME_FILE")"
 
@@ -59,27 +56,6 @@ mcd() {
 }
 
 
-function start_agent {
-    echo "Initialising new SSH agent..."
-    /usr/bin/ssh-agent | sed 's/^echo/#echo/' >"${SSH_ENV}"
-    echo "SSH agent started successfully."
-    chmod 600 "${SSH_ENV}"
-    . "${SSH_ENV}" >/dev/null
-    /usr/bin/ssh-add
-}
-
-# Source SSH settings, if applicable
-if [ -f "${SSH_ENV}" ]; then
-    . "${SSH_ENV}" >/dev/null
-    # Check if the SSH agent is still running
-    if ! ps -p "${SSH_AGENT_PID}" >/dev/null; then
-        echo "SSH agent not active, starting new agent..."
-        start_agent
-    fi
-else
-    echo "SSH environment file not found, starting new agent..."
-    start_agent
-fi
 
 # If ~/.inputrc doesn't exist yet: First include the original /etc/inputrc
 # so it won't get overridden
