@@ -20,47 +20,6 @@ INCLUDE_PATH="$SHELL_DIR/gitconfig"
 PYTHON_DIR="$DOTFILES_DIR/python"
 PYTHON_INSTALL_PATH="$HOME/AppData/Local/Programs/Python/"
 
-# Function to install Visual Studio Code and extensions
-function install_vscode() {
-    printf "\nChecking for Visual Studio Code installation...\n"
-
-    # Check if VS Code is installed
-    if winget list --id Microsoft.VisualStudioCode | grep -q "Microsoft.VisualStudioCode"; then
-        printf "\nVisual Studio Code is already installed.\n"
-    else
-        # Proceed with the installation if VS Code is not found
-        if ask "Visual Studio Code is not installed. Do you want to install it now?"; then
-            echo "Installing Visual Studio Code..."
-            winget install -e --id Microsoft.VisualStudioCode --silent \
-                --override "addcontextmenufiles=1 addcontextmenufolders=1 associatewithfiles=1 addtopath=1"
-            printf "\nVisual Studio Code installed.\n"
-        fi
-    fi
-
-    # Ask to install extensions regardless of installation
-    if ask "Do you want to install/update Visual Studio Code extensions?"; then
-        echo "Installing VS Code extensions..."
-        local extensions=(
-            "charliermarsh.ruff"
-            "dotjoshjohnson.xml" "dracula-theme.theme-dracula-pro" "github.copilot"
-            "github.copilot-chat" "ms-python.python"
-            "timonwong.shellcheck" "visualstudioexptteam.vscodeintellicode"
-            "vscodevim.vim" "pkief.material-icon-theme"
-            "foxundermoon.shell-format"
-        )
-
-        for ext in "${extensions[@]}"; do
-            if command -v code >/dev/null; then
-                code --install-extension "$ext" >/dev/null 2>&1
-            else
-                echo "VS Code command line tool not found. Skipping extension installation."
-                break
-            fi
-        done
-        echo "VS Code extensions installation complete."
-    fi
-}
-
 # Ask Y/n function
 function ask() {
     echo "" # Ensure an empty line before each question for clarity
@@ -71,91 +30,6 @@ function ask() {
         response_lc=$(echo "$resp" | tr '[:upper:]' '[:lower:]') # case insensitive
     fi
     [ "$response_lc" = "y" ]
-}
-
-# Function to check if Python executable exists in the known install path
-function check_python_installation() {
-    local python_installed=false
-    local python_path=""
-
-    # Check if any version of Python is installed in the known directory
-    for dir in "$PYTHON_INSTALL_PATH"/*/; do
-        if [[ -f "${dir}python.exe" ]]; then
-            python_installed=true
-            python_path="${dir}python.exe"
-            break
-        fi
-    done
-
-    if $python_installed; then
-        printf "\nPython is installed at %s\n" "$python_path"
-        # Check if Python is in PATH
-        if ! python --version &>/dev/null; then
-            printf "\nPython is not in PATH. Adding to PATH...\n"
-            add_python_to_path
-
-        else
-            printf "\nPython is already in PATH.\n"
-        fi
-    else
-        printf "\nPython is not installed in the expected directory.\n"
-        install_python
-    fi
-}
-
-function add_python_to_path() {
-    echo "Updating environment variables based on Python installation paths..."
-
-    # Use PowerShell to handle the path extraction and environment variable update
-    powershell.exe -Command "
-        # Get Python paths from 'where' command, avoiding WindowsApps which often defaults to a stub executable
-        \$pythonExePaths = (Get-Command python.exe -All | Where-Object { \$_ -notlike '*WindowsApps*' }).Source | Select-Object -Unique
-        if (\$pythonExePaths -eq \$null) {
-            Write-Host 'No Python installations found outside of WindowsApps.'
-            return
-        }
-
-        # Prepare the paths to add to PATH and PYTHONPATH
-        \$pathsToAdd = @()
-        foreach (\$path in \$pythonExePaths) {
-            \$dir = Split-Path -Parent \$path
-            if (-not [System.IO.Directory]::Exists(\$dir)) {
-                continue
-            }
-            \$pathsToAdd += \$dir  # Add the base directory
-            \$scriptsPath = Join-Path -Path \$dir -ChildPath 'Scripts'
-            if ([System.IO.Directory]::Exists(\$scriptsPath)) {
-                \$pathsToAdd += \$scriptsPath  # Add the Scripts directory
-            }
-        }
-
-        # Update PATH and PYTHONPATH
-        \$currentPath = [System.Environment]::GetEnvironmentVariable('PATH', [System.EnvironmentVariableTarget]::User)
-        \$currentPythonPath = [System.Environment]::GetEnvironmentVariable('PYTHONPATH', [System.EnvironmentVariableTarget]::User)
-
-        foreach (\$path in \$pathsToAdd) {
-            if (-not \$currentPath.ToLower().Contains(\$path.ToLower())) {
-                \$currentPath += ';'+\$path
-            }
-            if (\$currentPythonPath -eq \$null -or -not \$currentPythonPath.ToLower().Contains(\$path.ToLower())) {
-                if (\$currentPythonPath -ne \$null) {
-                    \$currentPythonPath += ';'
-                }
-                \$currentPythonPath += \$path
-            }
-        }
-
-        [System.Environment]::SetEnvironmentVariable('PATH', \$currentPath, [System.EnvironmentVariableTarget]::User)
-        [System.Environment]::SetEnvironmentVariable('PYTHONPATH', \$currentPythonPath, [System.EnvironmentVariableTarget]::User)
-
-    "
-
-    echo "Environment variables PATH and PYTHONPATH have been updated."
-}
-
-# Function to prompt user to install Python
-function install_python() {
-    echo "Please download and install Python from the official website or the software center."
 }
 
 append_path_to_bash_profile() {
@@ -180,20 +54,6 @@ append_path_to_bash_profile() {
 }
 
 ## Main script
-
-# Check Python installation and prompt for installation if necessary
-if ! check_python_installation; then
-    install_python
-fi
-
-# Check if winget is available
-printf "\nChecking for winget...\n"
-if ! command -v winget &>/dev/null; then
-    printf "\nwinget is not installed. Please install winget or run this script on a compatible system.\n"
-    exit 1
-else
-    install_vscode
-fi
 
 # Create .bash_profile in $HOME that sources .bashrc in $SHELL_DIR
 if ask "Do you want to create or update .bash_profile in $HOME?"; then
@@ -228,26 +88,6 @@ if ask "Do you want to copy _vimrc to $HOME?"; then
         attrib +h "$HOME/_vimrc"
         printf "\n_vimrc has been copied to %s.\n" "$HOME"
     fi
-fi
-
-# Handle Python linting files
-if [ -d "$PYTHON_DIR" ]; then
-    for file in "$PYTHON_DIR"/*; do
-        if [ -f "$file" ]; then
-            filename=$(basename "$file")
-            # Ask before copying each file
-            if ask "Do you want to copy $filename to your home directory?"; then
-                cp "$file" "$HOME/$filename"
-                printf "\nFile %s has been copied to the home directory.\n" "$filename"
-                # Set file to hidden
-                attrib +h "$HOME/$filename"
-            else
-                printf "\nNo changes made to %s.\n" "$filename"
-            fi
-        fi
-    done
-else
-    printf "\nPython directory not found.\n"
 fi
 
 # Handle vscode files
