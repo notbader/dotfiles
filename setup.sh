@@ -18,7 +18,6 @@ MINTTY_CONFIG="$HOME/.minttyrc"
 GIT_CONFIG="$HOME/.gitconfig"
 INCLUDE_PATH="$SHELL_DIR/gitconfig"
 PYTHON_DIR="$DOTFILES_DIR/python"
-PYTHON_INSTALL_PATH="$HOME/AppData/Local/Programs/Python/"
 
 # Ask Y/n function
 function ask() {
@@ -32,23 +31,82 @@ function ask() {
     [ "$response_lc" = "y" ]
 }
 
-append_path_to_bash_profile() {
-    python_paths=()
+normalize_path() {
+    echo "$1" | sed -e 's/\\/\//g' -e 's/^\([A-Za-z]\):/\/\L\1/'
+}
 
-    # Find all directories within the Python installation path
-    for directory in "$PYTHON_INSTALL_PATH"/*; do
-        if [ -d "$directory" ]; then
-            python_paths+=("$(realpath "$directory")")
-        fi
-    done
+remove_old_entries() {
+    local file=$1
+    local pattern=$2
+    local temp_file="${file}.tmp"
+    grep -v "$pattern" "$file" > "$temp_file"
+    mv "$temp_file" "$file"
+}
 
-    # Append each directory to the PATH environment variable
-    {
-        echo "# Add Python to PATH"
-        for path in "${python_paths[@]}"; do
-            echo "export PATH=\"$path:\$PATH\""
-        done
-    } >>"$BASH_PROFILE"
+find_real_python() {
+    # Use 'where' command to find all Python installations
+    local python_paths
+    python_paths=$(where python 2>/dev/null | grep -v "WindowsApps")
+
+    if [ -z "$python_paths" ]; then
+        return 1
+    fi
+
+    # Return the first non-WindowsApps Python
+    echo "$python_paths" | head -n 1
+}
+
+append_python_path_to_bash_profile() {
+    # Find the real Python executable
+    PYTHON_EXE=$(find_real_python)
+
+    if [ -z "$PYTHON_EXE" ]; then
+        echo "WARNING: Python is not installed or not in PATH"
+        echo "Skipping Python path configuration"
+        return 1
+    fi
+
+    echo "Found Python at: $PYTHON_EXE"
+
+    # Convert to Unix path and use it to get Scripts directory
+    PYTHON_EXE_UNIX=$(normalize_path "$PYTHON_EXE")
+
+    # Get Python Scripts directory using the real Python executable
+    PYTHON_SCRIPTS_WIN=$("$PYTHON_EXE_UNIX" -c "import sysconfig; print(sysconfig.get_path('scripts'))" 2>/dev/null)
+
+    if [ -z "$PYTHON_SCRIPTS_WIN" ]; then
+        echo "ERROR: Could not determine Python Scripts directory"
+        return 1
+    fi
+
+    PYTHON_SCRIPTS=$(normalize_path "$PYTHON_SCRIPTS_WIN")
+
+    echo "Detected Python Scripts directory: $PYTHON_SCRIPTS"
+
+    # Verify the Scripts directory exists
+    if [ ! -d "$PYTHON_SCRIPTS" ]; then
+        echo "Warning: Python Scripts directory does not exist: $PYTHON_SCRIPTS"
+        echo "Creating directory..."
+        mkdir -p "$PYTHON_SCRIPTS"
+    fi
+
+    # Remove old Python PATH entries
+    if grep -q 'export PATH=.*Python.*Scripts' "$BASH_PROFILE"; then
+        echo "Removing old Python PATH entries"
+        remove_old_entries "$BASH_PROFILE" 'export PATH=.*Python.*Scripts'
+    fi
+
+    # Remove old Python PYTHONPATH entries
+    if grep -q 'export PYTHONPATH=.*Python.*Scripts' "$BASH_PROFILE"; then
+        echo "Removing old Python PYTHONPATH entries"
+        remove_old_entries "$BASH_PROFILE" 'export PYTHONPATH=.*Python.*Scripts'
+    fi
+
+    # Add new PATH
+    echo "export PATH=\"$PYTHON_SCRIPTS:\$PATH\"" >> "$BASH_PROFILE"
+
+    # Add new PYTHONPATH
+    echo "export PYTHONPATH=\"$PYTHON_SCRIPTS:\$PYTHONPATH\"" >> "$BASH_PROFILE"
 
     printf "\nPython paths added to .bash_profile.\n"
 }
@@ -72,7 +130,10 @@ if ask "Do you want to create or update .bash_profile in $HOME?"; then
         printf "\n.bash_profile created and configured.\n"
     fi
 fi
-append_path_to_bash_profile
+
+if ask "Do you want to add Python paths to .bash_profile?"; then
+    append_python_path_to_bash_profile
+fi
 
 # Copy vimrc
 if ask "Do you want to copy _vimrc to $HOME?"; then
@@ -150,7 +211,7 @@ if ask "Do you want to append or update user info in .gitconfig?"; then
         {
             echo "[user]"
             echo "    name = notBader"
-            echo "    email = " # Leave email empty
+            echo "    email = "
         } >>"$GIT_CONFIG"
     fi
 fi
