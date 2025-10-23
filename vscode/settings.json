@@ -3,14 +3,13 @@
         "C:\\Users\\balma\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
     ],
     "editor.fontFamily": "Monaspace Neon Var, Fira Code, Monaco, monospace",
-    "editor.fontSize": 13,
     "editor.fontLigatures": true,
     "terminal.integrated.fontFamily": "FiraMono Nerd Font",
-    "terminal.integrated.defaultProfile.windows": "Git Bash",
     "terminal.integrated.cursorStyle": "line",
     "terminal.integrated.scrollback": 10000,
     "terminal.integrated.tabs.enabled": false,
-    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.defaultProfile.windows": "Git Bash",
     "diffEditor.ignoreTrimWhitespace": false,
     "zenMode.hideStatusBar": false,
     "zenMode.hideLineNumbers": false,
@@ -44,7 +43,7 @@
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
     "files.autoGuessEncoding": true,
-    "editor.inlineSuggest.enabled": true,
+    "editor.inlineSuggest.enabled": false,
     // "editor.quickSuggestions": {
     //     "other": "off"
     // },
@@ -276,9 +275,9 @@
         "statusBar.debuggingForeground": "#434C5E"
     },
     "vim.vimrc.enable": true,
-    "vim.vimrc.path": "~\\.vscodevimrc",
+    "vim.vimrc.path": "C:/Users/bbal/.vimrc",
     "explorer.confirmDelete": false,
-    "workbench.colorTheme": "Monokai Pro (Filter Octagon)",
+    "workbench.colorTheme": "GitHub Dark",
     "workbench.editorAssociations": {
         "*.copilotmd": "vscode.markdown.preview.editor",
         "*.xls": "default"
@@ -288,9 +287,6 @@
     "python.createEnvironment.trigger": "off",
     "chat.agent.maxRequests": 30,
     "github.copilot.chat.codesearch.enabled": true,
-    "remote.SSH.remotePlatform": {
-        "biomcd": "linux"
-    },
     "extensions.ignoreRecommendations": true,
     "hexeditor.columnWidth": 16,
     "hexeditor.showDecodedText": true,
@@ -303,12 +299,29 @@
     "github.copilot.chat.editor.temporalContext.enabled": true,
     "github.copilot.chat.edits.temporalContext.enabled": true,
     "github.copilot.chat.generateTests.codeLens": true,
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "workbench.iconTheme": "Monokai Pro (Filter Octagon) Icons",
+    "workbench.iconTheme": "Monokai Pro Icons",
+    "explorer.confirmDragAndDrop": false,
     "cursor.cpp.disabledLanguages": [
         "plaintext",
         "markdown",
         "scminput"
     ],
-    "C_Cpp.default.intelliSenseMode": "windows-gcc-x64"
+    "C_Cpp.default.intelliSenseMode": "windows-gcc-x64",
+    "C_Cpp.formatting": "vcFormat",
+    "C_Cpp.vcFormat.space.beforeInitializerListOpenBrace": true,
+    "[cpp]": {
+        "editor.wordBasedSuggestions": "off",
+        "editor.semanticHighlighting.enabled": true,
+        "editor.stickyScroll.defaultModel": "foldingProviderModel",
+        "editor.suggest.insertMode": "replace",
+        "editor.formatOnSave": true
+    },
+    "python.defaultInterpreterPath": "c:\\Users\\bbal\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+    "editor.fontSize": 16,
+    "remote.SSH.remotePlatform": {
+        "opmcsdev04": "linux"
+    },
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, Cpp11BracedListStyle: false }",
+    "update.mode": "none",
+    "git.openRepositoryInParentFolders": "always"
 }
