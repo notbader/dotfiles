@@ -44,7 +44,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 
 # Change Prompt
 new_line() {
-    printf "\n$ "
+    printf "\nλ "
 }
 function parse_git_dirty {
     [[ $(git status --porcelain 2>/dev/null) ]] && echo "*"
