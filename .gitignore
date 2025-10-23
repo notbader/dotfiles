@@ -93,3 +93,6 @@ final_status.xlsx
 
 # Sensitive
 /.ssh
+.bash_profile
+shell/.bashWork
+shell/init.vim
