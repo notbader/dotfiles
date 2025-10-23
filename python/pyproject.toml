@@ -66,6 +66,18 @@ exclude = [
 ]
 ignore = [
   "E501", # pycodestyle line too long, handled by black
+  "UP037", # pyupgrade - removes quotes from type annotation
+  "S608", # Ruff - Possible SQL injection
+  "S603", # Ruff - `subprocess` call: check for execution of untrusted input
+  "S101", # Ruff - Use of `assert` detected
+  "S314", # Ruff - Using `xml` to parse untrusted data is known to be vulnerable to XML attacks; use `defusedxml` equivalents
+  "S320", # Ruff - Same as above
+  "N817", # PEP8 - camelcase-imported-as-acronym
+  "B010", # Ruff - Do not call `setattr` with a constant attribute value. It is not any safer than normal property access.
+  "BLE001", # Ruff - Do not catch blind exception: `Exception`
+  "D104", # pydocstyle - missing docstring in public package
+  "C416", # Ruff - Unnecessary `list` comprehension (rewrite using `list()`)
+  "E501", # pycodestyle line too long, handled by black
   "D100", # pydocstyle - missing docstring in public module
   "D101", # pydocstyle - missing docstring in public class
   "D102", # pydocstyle - missing docstring in public method
@@ -74,21 +86,7 @@ ignore = [
   "D105", # pydocstyle - missing docstring in magic method
   "D106", # pydocstyle - missing docstring in public nested class
   "D107", # pydocstyle - missing docstring in __init__
-  "D202", # pydocstyle - no blank lines allowed after function docstring
-  "D205", # pydocstyle - 1 blank line required between summary line and description
-  "D415", # pydocstyle - first line should end with a period, question mark, or exclamation point
-  "UP037", # pyupgrade - removes quotes from type annotation
-  "A003", # flake8-builtins - class attribute {name} is shadowing a python builtin
-  "B010", # flake8-bugbear - do not call setattr with a constant attribute value
-  "B008", # flake8-bugbear - Do not perform function call `Parameter` in argument defaults
-  "BLE001", # Ruff - Do not catch blind exception
-  "S608", # Ruff - Possible SQL injection
-  "S603", # Ruff - `subprocess` call: check for execution of untrusted input
-  "S101", # Ruff - Use of `assert` detected
-  "S314", # Ruff - Using `xml` to parse untrusted data is known to be vulnerable to XML attacks; use `defusedxml` equivalents
-  "S320", # Ruff - Same as above
-  "ANN101", # flake8-annotations - Missing type annotation for Self
-  "UP031", # pyupgrade - Checks for printf-style string formatting, and offers to replace it with str.format calls.
+  "A005",    # flake8-builtins - shadowing a standard library
 ]
 select = [
   "A", # flake8-builtins
@@ -134,3 +132,57 @@ classmethod-decorators = ["classmethod"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.pyright]
+include = ["./src"]
+extraPaths = ["./", "./src"]
+exclude = ["docs"]
+stubPath = "./.py-stubs"
+pythonPlatform = "All"
+pythonVersion = "3.10"
+enableTypeIgnoreComments = true
+reportAssertAlwaysTrue = "warning"
+reportCallInDefaultInitializer = "none"
+reportConstantRedefinition = "warning"
+reportDuplicateImport = "warning"
+reportGeneralTypeIssues = "error"
+reportImplicitStringConcatenation = "warning"
+reportImportCycles = "error"
+reportIncompatibleMethodOverride = "none"
+reportIncompatibleVariableOverride = "warning"
+reportInvalidStringEscapeSequence = "warning"
+reportInvalidStubStatement = "warning"
+reportMissingImports = "error"
+reportMissingModuleSource = "error"
+reportMissingTypeArgument = "warning"
+reportMissingTypeStubs = "none"
+reportOptionalCall = "warning"
+reportOptionalContextManager = "warning"
+reportOptionalIterable = "warning"
+reportOptionalMemberAccess = "error"
+reportOptionalOperand = "warning"
+reportOptionalSubscript = "error"
+reportPrivateUsage = "warning"
+reportPropertyTypeMismatch = true
+reportSelfClsParameterName = "warning"
+reportUnboundVariable = "warning"
+reportUndefinedVariable = "warning"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "none"
+reportUnknownVariableType = "none"
+reportUnnecessaryCast = "warning"
+reportUnnecessaryIsInstance = "warning"
+reportUntypedClassDecorator = "warning"
+reportUntypedFunctionDecorator = "warning"
+reportUntypedNamedTuple = "warning"
+reportUnusedClass = "warning"
+reportUnusedFunction = "warning"
+reportUnusedImport = "warning"
+reportUnusedVariable = "warning"
+strictDictionaryInference = true
+strictListInference = true
+strictParameterNoneValue = true
+typeCheckingMode = "strict"
+reportUntypedBaseClass = "none"
