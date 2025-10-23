@@ -151,6 +151,26 @@ if ask "Do you want to copy _vimrc to $HOME?"; then
     fi
 fi
 
+# Handle Python linting files
+if [ -d "$PYTHON_DIR" ]; then
+    for file in "$PYTHON_DIR"/*; do
+        if [ -f "$file" ]; then
+            filename=$(basename "$file")
+            # Ask before copying each file
+            if ask "Do you want to copy $filename to your home directory?"; then
+                cp "$file" "$HOME/$filename"
+                printf "\nFile %s has been copied to the home directory.\n" "$filename"
+                # Set file to hidden
+                attrib +h "$HOME/$filename"
+            else
+                printf "\nNo changes made to %s.\n" "$filename"
+            fi
+        fi
+    done
+else
+    printf "\nPython directory not found.\n"
+fi
+
 # Handle vscode files
 printf "\nProcessing VS Code configuration files...\n"
 
